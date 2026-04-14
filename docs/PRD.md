@@ -3,7 +3,7 @@
 **Version:** 2.0.0-draft
 **Date:** April 15, 2026
 **Authors:** Architecture Team
-**Classification:** Internal — Confidential
+**Classification:** Public — Draft
 **Previous Name:** Hifz Hub → renamed to **Ilmora** in repository
 
 ---
@@ -222,18 +222,23 @@
 - **Free Tier:** 1 teacher, up to 2 Halaqat, 15 students — forever free
 - **Pro Tier ($7/month):** Unlimited Halaqat, unlimited students, analytics, notifications
 - **Institution Tier ($49/month):** Multi-teacher admin, aggregate reporting, priority support
-- **Open Core Model:** Core platform is open source (AGPL); premium features (analytics, admin panel, AI features) are proprietary SaaS add-ons
+- **Open Core Model:** Core platform is open source (MIT); premium features (analytics, admin panel, AI features) are proprietary SaaS add-ons
 
 ---
 
 ## Implementation Gaps
 
-The following items are referenced in this PRD but are **not yet present** in the repository:
+The following items are referenced in this PRD but are **not yet fully present** in the repository:
 
-1. **Authentication system** — No auth package installed yet (no Breeze, Fortify, Sanctum, or Jetstream in composer.json). Must be added before any user-facing feature.
-2. **Database migrations** — No migration files uploaded/visible. All entities from the ERD need migrations.
+### Already Implemented
+- **Partial authentication** — Login (`app/Livewire/Auth/Login.php`) and logout route exist using Laravel's built-in auth. No third-party auth package (Breeze/Fortify/Jetstream) is required.
+- **Core database migrations** — Migrations exist for `users`, `schools`, `groups`, `group_student`, `lessons`, `assignments`, `assignment_student`, `attendances`, `cache`, `jobs`, and `sessions` tables.
+
+### Still Missing
+1. **Registration & password management** — No registration, password-reset, or email-verification flows. Only login is currently implemented.
+2. **Halaqah scheduling schema** — No migration for a scheduling/session entity (distinct from Laravel's `sessions` table). Needed for the ERD's Halaqah-session tracking.
 3. **Queue infrastructure** — Currently set to `sync`. Must upgrade to `database` or `redis` driver before notifications can work asynchronously.
 4. **Caching** — Currently `file` driver. Acceptable for MVP, but Redis recommended for production.
-5. **No Quran reference data** — Surah/Ayah seed data not yet created.
-6. **No i18n setup** — No `lang/` files visible. Arabic translation files needed as source of truth.
-7. **No OAuth/Social login** — Only email/password auth path available with current setup.
+5. **Quran reference data** — Surah/Ayah seed data not yet created.
+6. **i18n setup** — No `lang/` directory present. Arabic translation files needed as source of truth.
+7. **OAuth/Social login** — Only email/password auth path is currently available.
