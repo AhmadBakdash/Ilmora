@@ -3,7 +3,7 @@
 **Version:** 2.0.0-draft
 **Date:** April 15, 2026
 **Authors:** Architecture Team
-**Classification:** Internal — Confidential
+**Classification:** Public — Draft
 
 ---
 
@@ -11,7 +11,7 @@
 
 This ERD follows Laravel/Eloquent naming conventions throughout:
 
-- **Table names:** plural, snake_case (`halaqat`, `sessions`, `assignments`)
+- **Table names:** plural, snake_case (`halaqat`, `halaqah_sessions`, `assignments`)
 - **Primary keys:** `id` (unsigned big integer, auto-increment)
 - **Foreign keys:** `{singular_table}_id` (e.g., `user_id`, `halaqah_id`)
 - **Timestamps:** `created_at`, `updated_at` (via `$table->timestamps()`)
@@ -154,7 +154,7 @@ erDiagram
     %% SESSIONS & SCHEDULE
     %% ==========================================
 
-    sessions {
+    halaqah_sessions {
         bigint id PK
         bigint halaqah_id FK
         bigint teacher_id FK "users.id"
@@ -330,7 +330,7 @@ erDiagram
     tenants ||--o{ users : "has"
     tenants ||--o{ schools : "has"
     tenants ||--o{ halaqat : "has"
-    tenants ||--o{ sessions : "has"
+    tenants ||--o{ halaqah_sessions : "has"
     tenants ||--o{ assignments : "has"
     tenants ||--o{ invites : "has"
     tenants ||--o{ audit_logs : "has"
@@ -345,15 +345,15 @@ erDiagram
     halaqat ||--o{ halaqah_student : "enrolls"
     users ||--o{ halaqah_student : "enrolled_as_student"
 
-    halaqat ||--o{ sessions : "scheduled_in"
-    users ||--o{ sessions : "taught_by"
+    halaqat ||--o{ halaqah_sessions : "scheduled_in"
+    users ||--o{ halaqah_sessions : "taught_by"
     halaqat ||--o{ recurring_rules : "follows"
-    recurring_rules ||--o{ sessions : "generates"
+    recurring_rules ||--o{ halaqah_sessions : "generates"
 
-    sessions ||--o{ attendances : "tracks"
+    halaqah_sessions ||--o{ attendances : "tracks"
     users ||--o{ attendances : "attended_by"
 
-    sessions ||--o{ assignments : "contains"
+    halaqah_sessions ||--o{ assignments : "contains"
     users ||--o{ assignments : "assigned_to_student"
     users ||--o{ assignments : "created_by_teacher"
 
@@ -414,29 +414,33 @@ Nightly scheduled command (`php artisan snapshots:compute`) computes and stores 
 
 ## Migration Status
 
-Since no migration files were included in the uploaded repository files, the implementation status of each entity is:
+The table below reflects the actual state of `database/migrations/` in the repository. Entities that are already built use the current naming convention (`groups` for halaqat, `group_student` for halaqah_student, etc.). The ERD represents the **target schema** for the full product; some tables will be added or renamed in future phases.
 
 | Entity | Migration Status | Notes |
 |--------|-----------------|-------|
-| `tenants` | ❌ Not yet built | Foundation — build first |
-| `users` | ⚠️ Partial | Laravel ships with a default users migration; needs tenant_id, locale, timezone, and other custom columns |
-| `roles` | ❌ Not yet built | Consider using spatie/laravel-permission |
+| `tenants` | ❌ Not yet built | Replaced for now by `schools` table |
+| `users` | ✅ Built | `0001_01_01_000000` — missing `locale`, `timezone`, and ERD-specific columns; extended in `2024_01_01_000002` to add `school_id` and `role` |
+| `roles` | ❌ Not yet built | `role` column added directly to `users`; full RBAC not yet implemented |
 | `role_user` | ❌ Not yet built | |
 | `permissions` | ❌ Not yet built | Consider using spatie/laravel-permission |
 | `permission_role` | ❌ Not yet built | |
-| `schools` | ❌ Not yet built | P2 feature — can defer |
-| `halaqat` | ❌ Not yet built | Core — build in Phase 1 |
-| `halaqah_student` | ❌ Not yet built | Core — build in Phase 1 |
-| `sessions` | ❌ Not yet built | Core — build in Phase 1 |
+| `schools` | ✅ Built | `2024_01_01_000001` — maps to the tenant/school concept |
+| `halaqat` | ⚠️ Partial | `groups` table built in `2024_01_01_000003`; rename and add ERD columns in a future migration |
+| `halaqah_student` | ✅ Built | `group_student` pivot built in `2024_01_01_000004` |
+| `halaqah_sessions` | ❌ Not yet built | Named `halaqah_sessions` (not `sessions`) to avoid collision with Laravel's built-in `sessions` table |
 | `recurring_rules` | ❌ Not yet built | Core — build in Phase 1 |
-| `attendances` | ❌ Not yet built | P1 — build post-MVP |
-| `assignments` | ❌ Not yet built | Core — build in Phase 1 |
+| `attendances` | ✅ Built | `2024_01_01_000008` |
+| `assignments` | ✅ Built | `2024_01_01_000006` |
+| `assignment_student` | ✅ Built | `2024_01_01_000007` (pivot) |
+| `lessons` | ✅ Built | `2024_01_01_000005` — per-session Quran progress records |
 | `progress_snapshots` | ❌ Not yet built | P1 — build post-MVP |
 | `surahs` | ❌ Not yet built | Reference data — seed early |
 | `notifications` | ❌ Not yet built | Use `php artisan notifications:table` |
 | `notification_preferences` | ❌ Not yet built | P1 feature |
 | `invites` | ❌ Not yet built | Core — build in Phase 1 |
 | `audit_logs` | ❌ Not yet built | Consider spatie/laravel-activitylog |
+| `cache` | ✅ Built | `0001_01_01_000001` — Laravel cache driver table |
+| `jobs` | ✅ Built | `0001_01_01_000002` — Laravel queue jobs table |
 
 ### Recommended Migration Order
 
@@ -449,7 +453,7 @@ Since no migration files were included in the uploaded repository files, the imp
 6. halaqat
 7. halaqah_student
 8. recurring_rules
-9. sessions
+9. halaqah_sessions
 10. assignments
 11. attendances
 12. invites

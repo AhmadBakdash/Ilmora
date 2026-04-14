@@ -436,27 +436,26 @@ Security requirements remain unchanged — this platform handles Quran education
 **Context:**
 This decision remains valid regardless of tech stack. The platform serves the global Muslim community for Quran education.
 
-**Decision: Open Core Model with AGPL v3 License**
+**Decision: Open Core Model with MIT License**
 
 | Component | License | Description |
 |-----------|---------|-------------|
-| **Core Platform** | AGPL v3 | Teacher dashboard, weekly schedule, student portal, basic assignment tracking, student login, core Livewire components |
+| **Core Platform** | MIT | Teacher dashboard, weekly schedule, student portal, basic assignment tracking, student login, core Livewire components |
 | **Premium Features** | Proprietary (SaaS-only) | Advanced analytics, institutional admin panel, AI features, priority support, white-labeling |
 | **Quran Reference Data** | Public Domain | Surah/Ayah metadata, transliterations |
 
 **Laravel-Specific Notes:**
 
-- Laravel itself is MIT-licensed, which is compatible with AGPL for the application layer
+- Laravel itself is MIT-licensed — consistent with the repo's license
 - All Spatie packages are MIT-licensed — compatible
 - Livewire is MIT-licensed — compatible
-- AGPL requires anyone deploying a modified version as a service to release their modifications. This protects against competitors taking the codebase and launching a competing SaaS
+- The MIT license permits broad use, modification, and distribution with attribution; commercial protection relies on the proprietary SaaS add-on strategy rather than a copyleft license
 
 **Monetization Model:**
 
 1. **SaaS (Primary):** Hosted version at ilmora.com. Free tier → Pro → Institution pricing.
-2. **Dual Licensing:** Organizations wanting to self-host without AGPL obligations pay for a commercial license.
-3. **Support Contracts:** Paid support and implementation consulting for large institutions.
-4. **Community Goodwill:** The open source core builds trust in the Muslim community, drives adoption, and creates network effects.
+2. **Support Contracts:** Paid support and implementation consulting for large institutions.
+3. **Community Goodwill:** The open source core builds trust in the Muslim community, drives adoption, and creates network effects.
 
 **Consequences:** Unchanged from original ADR-008.
 
@@ -841,123 +840,132 @@ database/
 
 # Appendix B: Repository Structure
 
+The tree below reflects the **current state** of the repository. Files and directories prefixed with `[planned]` are not yet present and represent the target structure for future phases.
+
 ```
 ilmora/
-├── CLAUDE.md                        # AI assistant context
 ├── README.md                        # Project overview
-├── LICENSE                          # AGPL v3
-├── CONTRIBUTING.md                  # Contribution guidelines
-├── composer.json                    # PHP dependencies
+├── LICENSE                          # MIT
+├── CHANGELOG.md
+├── Dockerfile
+├── docker-compose.yml
+├── composer.json                    # PHP dependencies (laravel/framework, livewire/livewire)
+├── composer.lock
 ├── package.json                     # JS dependencies
+├── package-lock.json
 ├── vite.config.js                   # Vite configuration
-├── tailwind.config.js               # Tailwind + RTL config
+├── tailwind.config.js               # Tailwind config
+├── phpunit.xml
+├── postcss.config.js
 ├── .env.example                     # Environment template
+├── .editorconfig
+├── .gitattributes
+├── .gitignore
+├── .styleci.yml
 ├── .github/
-│   ├── workflows/
-│   │   └── ci.yml                   # Pint + PHPUnit + Deploy
-│   └── PULL_REQUEST_TEMPLATE.md
+│   └── workflows/
+│       ├── issues.yml
+│       ├── pull-requests.yml
+│       ├── tests.yml
+│       └── update-changelog.yml
 ├── app/
 │   ├── Http/
-│   │   ├── Controllers/             # Resource controllers
-│   │   ├── Requests/                # Form Request validation
+│   │   ├── Controllers/
+│   │   │   └── Controller.php
 │   │   └── Middleware/
-│   │       ├── SetLocale.php
-│   │       └── EnsureTenant.php
+│   │       ├── CheckRole.php
+│   │       └── EnsureSchoolExists.php
 │   ├── Livewire/
-│   │   ├── Schedule/
-│   │   │   └── WeeklyView.php       # Core schedule component
-│   │   ├── Halaqah/
-│   │   │   ├── Create.php
-│   │   │   ├── Edit.php
-│   │   │   └── StudentManager.php
-│   │   ├── Assignment/
-│   │   │   ├── Form.php
-│   │   │   └── GradePanel.php
-│   │   ├── Student/
-│   │   │   ├── Dashboard.php
-│   │   │   └── ProgressView.php
-│   │   └── Notification/
-│   │       └── NotificationBell.php
+│   │   ├── Auth/
+│   │   │   └── Login.php
+│   │   ├── Dashboard.php
+│   │   ├── Groups.php
+│   │   ├── LessonModal.php
+│   │   ├── Setup.php
+│   │   └── Students.php
 │   ├── Models/
-│   │   ├── Concerns/
-│   │   │   └── BelongsToTenant.php
-│   │   ├── User.php
-│   │   ├── Tenant.php
-│   │   ├── Halaqah.php
-│   │   ├── Session.php
 │   │   ├── Assignment.php
 │   │   ├── Attendance.php
-│   │   ├── Invite.php
-│   │   ├── Surah.php
-│   │   ├── RecurringRule.php
-│   │   └── ProgressSnapshot.php
-│   ├── Notifications/
-│   │   ├── SessionReminder.php
-│   │   └── AssignmentDue.php
-│   ├── Policies/
-│   │   ├── HalaqahPolicy.php
-│   │   ├── SessionPolicy.php
-│   │   └── AssignmentPolicy.php
-│   ├── Services/
-│   │   ├── QuranService.php         # Ayah validation, Surah lookup
-│   │   ├── ScheduleService.php      # Recurring session generation
-│   │   └── ProgressService.php      # Snapshot computation
-│   └── Console/Commands/
-│       ├── ComputeSnapshots.php
-│       ├── SendSessionReminders.php
-│       └── ExpireInvites.php
-├── resources/
-│   ├── views/
-│   │   ├── layouts/
-│   │   │   ├── app.blade.php        # Teacher layout (RTL-aware)
-│   │   │   └── student.blade.php    # Student layout (read-only)
-│   │   ├── livewire/                # Livewire component views
-│   │   ├── components/              # Blade components (buttons, cards, etc.)
-│   │   └── emails/                  # Notification mail templates
-│   ├── css/
-│   │   └── app.css                  # Tailwind imports + Quran font
-│   └── js/
-│       └── app.js                   # Alpine.js + Livewire init
-├── lang/
-│   ├── ar.json                      # Arabic (source of truth)
-│   ├── en.json                      # English
-│   ├── de.json                      # German
-│   ├── tr.json                      # Turkish
-│   ├── ur.json                      # Urdu
-│   ├── ms.json                      # Malay
-│   └── fr.json                      # French
-├── database/
-│   ├── migrations/                  # Chronological migrations
-│   ├── seeders/
-│   │   ├── DatabaseSeeder.php
-│   │   ├── SurahSeeder.php          # 114 Surahs with metadata
-│   │   ├── RoleSeeder.php           # Roles + permissions
-│   │   └── DemoSeeder.php           # Demo data for development
-│   └── factories/
-│       ├── UserFactory.php
-│       ├── HalaqahFactory.php
-│       └── SessionFactory.php
-├── routes/
-│   ├── web.php                      # Web routes (Blade + Livewire)
-│   └── api.php                      # API routes (v2.0, future)
+│   │   ├── Group.php
+│   │   ├── Lesson.php
+│   │   ├── School.php
+│   │   └── User.php
+│   └── Providers/
+│       └── AppServiceProvider.php
+├── bootstrap/
+│   ├── app.php
+│   └── providers.php
 ├── config/
-│   ├── database.php
+│   ├── app.php
 │   ├── auth.php
-│   ├── permission.php               # Spatie permissions config
-│   └── ilmora.php                   # App-specific config (week start, etc.)
-├── tests/
-│   ├── Feature/
-│   │   ├── Auth/
-│   │   ├── Halaqah/
-│   │   ├── Schedule/
-│   │   └── Assignment/
-│   └── Unit/
-│       ├── QuranServiceTest.php
-│       └── ProgressServiceTest.php
-└── docs/
-    ├── PRD.md
-    ├── ERD.md
-    └── ADR.md
+│   ├── cache.php
+│   ├── database.php
+│   ├── filesystems.php
+│   ├── logging.php
+│   ├── mail.php
+│   ├── queue.php
+│   ├── services.php
+│   └── session.php
+├── database/
+│   ├── factories/
+│   │   └── UserFactory.php
+│   ├── migrations/
+│   │   ├── 0001_01_01_000000_create_users_table.php
+│   │   ├── 0001_01_01_000001_create_cache_table.php
+│   │   ├── 0001_01_01_000002_create_jobs_table.php
+│   │   ├── 2024_01_01_000001_create_schools_table.php
+│   │   ├── 2024_01_01_000002_add_school_id_role_to_users_table.php
+│   │   ├── 2024_01_01_000003_create_groups_table.php
+│   │   ├── 2024_01_01_000004_create_group_student_table.php
+│   │   ├── 2024_01_01_000005_create_lessons_table.php
+│   │   ├── 2024_01_01_000006_create_assignments_table.php
+│   │   ├── 2024_01_01_000007_create_assignment_student_table.php
+│   │   └── 2024_01_01_000008_create_attendances_table.php
+│   └── seeders/
+│       ├── DatabaseSeeder.php
+│       └── DemoSeeder.php
+├── docker/
+│   ├── entrypoint.sh
+│   └── nginx/
+│       └── default.conf
+├── docs/
+│   ├── PRD.md
+│   ├── ERD.md
+│   └── ADR.md
+├── public/
+│   ├── index.php
+│   ├── favicon.ico
+│   ├── robots.txt
+│   └── .htaccess
+├── resources/
+│   ├── css/
+│   │   └── app.css
+│   ├── js/
+│   │   ├── app.js
+│   │   └── bootstrap.js
+│   └── views/
+│       ├── components/
+│       │   └── layouts/
+│       │       └── app.blade.php
+│       ├── livewire/
+│       │   ├── auth/
+│       │   │   └── login.blade.php
+│       │   ├── dashboard.blade.php
+│       │   ├── groups.blade.php
+│       │   ├── lesson-modal.blade.php
+│       │   ├── setup.blade.php
+│       │   └── students.blade.php
+│       └── welcome.blade.php
+├── routes/
+│   ├── console.php
+│   └── web.php
+├── storage/                         # Laravel storage (gitignored content)
+└── tests/
+    ├── Feature/
+    │   └── ExampleTest.php
+    ├── Unit/
+    │   └── ExampleTest.php
+    └── TestCase.php
 ```
 
 ---
@@ -990,7 +998,7 @@ ilmora/
 
 - All product features, personas, and requirements (PRD content)
 - All ERD entities and relationships (only naming conventions changed)
-- AGPL v3 open source strategy
+- MIT open source strategy
 - Team structure, sprint cadence, and work division approach
 - Security requirements and compliance targets (GDPR, PDPL)
 - i18n language list and RTL-first approach
