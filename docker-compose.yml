@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: ilmora_app
+    restart: unless-stopped
+    environment:
+      APP_NAME: Ilmora
+      APP_ENV: production
+      APP_KEY: ${APP_KEY}
+      APP_URL: ${APP_URL:-http://localhost}
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: ${DB_DATABASE:-ilmora}
+      DB_USERNAME: ${DB_USERNAME:-ilmora}
+      DB_PASSWORD: ${DB_PASSWORD:-secret}
+    volumes:
+      - ./storage:/var/www/storage
+    depends_on:
+      - db
+    networks:
+      - ilmora
+
+  db:
+    image: mariadb:11
+    container_name: ilmora_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootsecret}
+      MYSQL_DATABASE: ${DB_DATABASE:-ilmora}
+      MYSQL_USER: ${DB_USERNAME:-ilmora}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-secret}
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - ilmora
+
+  nginx:
+    image: nginx:alpine
+    container_name: ilmora_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./public:/var/www/public
+    depends_on:
+      - app
+    networks:
+      - ilmora
+
+networks:
+  ilmora:
+    driver: bridge
+
+volumes:
+  db_data:
