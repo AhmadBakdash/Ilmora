@@ -11,7 +11,13 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->alias([
+            'role' => \App\Http\Middleware\CheckRole::class,
+            'school' => \App\Http\Middleware\EnsureSchoolExists::class,
+        ]);
+        $middleware->web(append: [
+            \App\Http\Middleware\EnsureSchoolExists::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
