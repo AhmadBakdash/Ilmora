@@ -4,8 +4,10 @@ namespace App\Livewire;
 
 use App\Models\School;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 
 class Setup extends Component
@@ -24,27 +26,36 @@ class Setup extends Component
         'admin_password' => 'required|min:8|confirmed',
     ];
 
-    public function submit(): void
+    public function submit()
     {
         $this->validate();
-        $school = School::create([
-            'name' => $this->school_name,
-            'slug' => Str::slug($this->school_name),
-        ]);
-        $user = User::create([
-            'name' => $this->admin_name,
-            'email' => $this->admin_email,
-            'password' => Hash::make($this->admin_password),
-            'school_id' => $school->id,
-            'role' => 'school_admin',
-        ]);
-        auth()->login($user);
-        $this->done = true;
-        $this->redirect(route('dashboard'), navigate: true);
+        try {
+            $school = School::create([
+                'name' => $this->school_name,
+                'slug' => Str::slug($this->school_name),
+            ]);
+
+            $user = User::create([
+                'name' => $this->admin_name,
+                'email' => $this->admin_email,
+                'password' => Hash::make($this->admin_password),
+                'school_id' => $school->id,
+                'role' => 'school_admin',
+            ]);
+
+            Auth::login($user);
+            request()->session()->regenerate();
+
+            return redirect()->route('dashboard');
+        } catch (\Throwable $throwable) {
+            report($throwable);
+            $this->addError('form', 'Setup failed. Please try again or contact support if the problem persists.');
+        }
     }
 
+    #[Layout('components.layouts.app')]
     public function render()
     {
-        return view('livewire.setup')->layout('components.layouts.app');
+        return view('livewire.setup');
     }
 }
