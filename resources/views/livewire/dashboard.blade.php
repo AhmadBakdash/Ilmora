@@ -35,7 +35,7 @@ $color = fn($lesson) => $palette[($lesson->group_id ?? $lesson->id ?? 0) % count
         </h2>
         <p class="text-sm text-slate-400 dark:text-slate-500 mt-0.5">
             {{ $weekStartDate->locale(app()->getLocale())->isoFormat('D MMMM') }} —
-            {{ $weekStartDate->copy()->addDays(4)->locale(app()->getLocale())->isoFormat('D MMMM YYYY') }}
+            {{ $weekStartDate->copy()->addDays(6)->locale(app()->getLocale())->isoFormat('D MMMM YYYY') }}
         </p>
     </div>
 
@@ -51,7 +51,7 @@ $color = fn($lesson) => $palette[($lesson->group_id ?? $lesson->id ?? 0) % count
             </svg>
         </button>
 
-        <button wire:click="$set('weekStart', '{{ \Carbon\Carbon::today()->startOfWeek()->format('Y-m-d') }}')"
+        <button wire:click="$set('weekStart', '{{ \Carbon\Carbon::today()->startOfWeek(0)->format('Y-m-d') }}')"
                 class="px-3 h-9 rounded-xl border border-slate-200 dark:border-navy-600
                        text-xs font-medium text-slate-600 dark:text-slate-300
                        hover:bg-slate-100 dark:hover:bg-navy-700
@@ -90,11 +90,11 @@ $color = fn($lesson) => $palette[($lesson->group_id ?? $lesson->id ?? 0) % count
         {{-- Time gutter --}}
         <div class="w-14 flex-shrink-0 border-e border-slate-100 dark:border-navy-700"></div>
 
-        @for($d = 1; $d <= 5; $d++)
+        @php $dayOrder = [7, 1, 2, 3, 4, 5, 6]; /* Sun=7 first (ISO), then Mon–Sat */ @endphp
+        @foreach($dayOrder as $position => $isoDay)
             @php
-                $colDate    = $weekStartDate->copy()->addDays($d - 1);
-                $isToday    = $isCurrentWeek && $todayDow === $d;
-                $dayNum     = $d;
+                $colDate = $weekStartDate->copy()->addDays($position);
+                $isToday = $isCurrentWeek && $todayDow === $isoDay;
             @endphp
             <div @class([
                 'flex-1 px-3 py-3 text-center border-e last:border-e-0 border-slate-100 dark:border-navy-700',
@@ -104,14 +104,14 @@ $color = fn($lesson) => $palette[($lesson->group_id ?? $lesson->id ?? 0) % count
                     'text-[11px] font-semibold uppercase tracking-wider mb-0.5',
                     'text-emerald-600 dark:text-emerald-400' => $isToday,
                     'text-slate-400 dark:text-slate-500' => !$isToday,
-                ])>{{ __('lessons.days.'.$dayNum) }}</p>
+                ])>{{ __('lessons.days.'.$isoDay) }}</p>
                 <p @class([
                     'text-lg font-bold leading-none',
                     'text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-800/40 w-9 h-9 rounded-full flex items-center justify-center mx-auto' => $isToday,
                     'text-slate-700 dark:text-slate-300' => !$isToday,
                 ])>{{ $colDate->day }}</p>
             </div>
-        @endfor
+        @endforeach
     </div>
 
     {{-- Scrollable time grid --}}
@@ -131,9 +131,9 @@ $color = fn($lesson) => $palette[($lesson->group_id ?? $lesson->id ?? 0) % count
             </div>
 
             {{-- Day columns --}}
-            @for($d = 1; $d <= 5; $d++)
+            @foreach($dayOrder as $position => $isoDay)
                 @php
-                    $isToday = $isCurrentWeek && $todayDow === $d;
+                    $isToday = $isCurrentWeek && $todayDow === $isoDay;
                 @endphp
                 <div @class([
                     'flex-1 relative border-e last:border-e-0 border-slate-100 dark:border-navy-700',
@@ -171,8 +171,8 @@ $color = fn($lesson) => $palette[($lesson->group_id ?? $lesson->id ?? 0) % count
                     @endif
 
                     {{-- Lesson cards --}}
-                    @if($this->lessons->has($d))
-                        @foreach($this->lessons[$d] as $lesson)
+                    @if($this->lessons->has($isoDay))
+                        @foreach($this->lessons[$isoDay] as $lesson)
                             @php
                                 [$sh, $sm] = array_pad(explode(':', substr($lesson->start_time, 0, 5)), 2, '0');
                                 [$eh, $em] = array_pad(explode(':', substr($lesson->end_time, 0, 5)), 2, '0');
@@ -211,7 +211,7 @@ $color = fn($lesson) => $palette[($lesson->group_id ?? $lesson->id ?? 0) % count
                     @endif
 
                     {{-- Empty slot click-to-add hint --}}
-                    @if(!$this->lessons->has($d))
+                    @if(!$this->lessons->has($isoDay))
                         <a href="{{ route('lessons') }}"
                            class="absolute inset-2 rounded-xl border-2 border-dashed border-transparent
                                   hover:border-emerald-200 dark:hover:border-emerald-800
@@ -224,7 +224,7 @@ $color = fn($lesson) => $palette[($lesson->group_id ?? $lesson->id ?? 0) % count
                         </a>
                     @endif
                 </div>
-            @endfor
+            @endforeach
 
         </div>
     </div>

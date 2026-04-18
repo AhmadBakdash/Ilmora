@@ -14,10 +14,16 @@ Route::middleware(\App\Http\Middleware\EnsureSchoolExists::class)->group(functio
 
     Route::middleware(['auth'])->group(function () {
         Route::get('/dashboard', Dashboard::class)->name('dashboard');
-        Route::get('/lessons', LessonForm::class)->name('lessons');
-        Route::get('/teachers', Teachers::class)->name('teachers');
-        Route::get('/groups', Groups::class)->name('groups');
-        Route::get('/students', Students::class)->name('students');
+
+        Route::middleware('role:school_admin|teacher')->group(function () {
+            Route::get('/lessons', LessonForm::class)->name('lessons');
+            Route::get('/groups', Groups::class)->name('groups');
+            Route::get('/students', Students::class)->name('students');
+        });
+
+        Route::middleware('role:school_admin')->group(function () {
+            Route::get('/teachers', Teachers::class)->name('teachers');
+        });
     });
 });
 

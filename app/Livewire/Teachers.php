@@ -55,7 +55,8 @@ class Teachers extends Component
         if ($this->editingId) {
             User::findOrFail($this->editingId)->update($data);
         } else {
-            User::create($data);
+            $teacher = User::create($data);
+            $teacher->assignRole('teacher');
         }
 
         $this->reset(['name', 'email', 'password', 'showForm', 'editingId']);

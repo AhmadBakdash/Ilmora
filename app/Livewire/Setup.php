@@ -38,6 +38,7 @@ class Setup extends Component
             'school_id' => $school->id,
             'role' => 'school_admin',
         ]);
+        $user->assignRole('school_admin');
         auth()->login($user);
         $this->done = true;
         $this->redirect(route('dashboard'));

@@ -40,7 +40,7 @@ class StudentRegister extends Component
     {
         $this->validate();
 
-        User::create([
+        $student = User::create([
             'name'          => $this->name,
             'age'           => (int) $this->age,
             'guardian_name' => $this->guardian_name,
@@ -50,6 +50,7 @@ class StudentRegister extends Component
             'school_id'     => $this->school->id,
             'role'          => 'student',
         ]);
+        $student->assignRole('student');
 
         $this->registered = true;
     }

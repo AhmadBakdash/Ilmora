@@ -47,6 +47,7 @@ class Students extends Component
             $student->update($data);
         } else {
             $student = User::create($data);
+            $student->assignRole('student');
         }
 
         $this->syncSiblings($student);

@@ -1,6 +1,6 @@
 # Ilmora — Product Requirements Document (PRD)
 
-**Version:** 4.1.0 — Student Registration & Siblings Sprint  
+**Version:** 4.2.0 — Spatie RBAC + Full 7-Day Calendar Sprint  
 **Date:** 2026-04-18  
 **Auditor:** Claude Code (Senior Technical PM)  
 **Classification:** Internal  
@@ -20,8 +20,8 @@
 | **Migrations** | Full ERD covered | 15 custom + 3 Laravel default migrations | 🔧 Partial (see Section 3) |
 | **Authentication** | Laravel Breeze | `laravel/breeze ^2.0` in `require-dev` only — **never installed/scaffolded**; custom `Livewire\Auth\Login` hand-rolled instead; `StudentRegister` Livewire component added (`GET /register/{school:slug}`) | 🔧 Partial — login + student self-reg; no teacher register/reset |
 | **Session Auth** | Cookie-based | `Auth::attempt()` in `Login.php`, session regenerate, logout route | ✅ Functional |
-| **RBAC — Spatie** | `spatie/laravel-permission` | `"spatie/laravel-permission": "^6.0"` installed in `composer.json` — **no migrations run, `HasRoles` trait NOT on `User` model, no role seeder** | 📦 Package only |
-| **Role System (Custom)** | — | `role` string column on `users` table; `CheckRole` middleware; `isTeacher()`/`isStudent()` helpers on `User` model | 🔧 Basic only |
+| **RBAC — Spatie** | `spatie/laravel-permission` | Migrations run (`2026_04_18_113224`); `HasRoles` trait on `User`; `RoleSeeder` seeds 4 roles + 20 permissions; all user-creation paths call `assignRole()`; existing users backfilled via `tinker` | ✅ Active |
+| **Role System (Custom)** | — | `role` string column retained for scoping queries; Spatie `RoleMiddleware` replaces old `CheckRole` alias in `bootstrap/app.php`; routes `/lessons`, `/groups`, `/students` require `role:school_admin\|teacher`; `/teachers` requires `role:school_admin` | ✅ Routes protected |
 | **Livewire** | ^3.0 | `"livewire/livewire": "^3.0"` in `composer.json` | ✅ v3 |
 | **Alpine.js** | ^3.x | `"alpinejs": "^3.15.11"` in `package.json` | ✅ v3.15 |
 | **Alpine plugins** | collapse/focus/sort | `@alpinejs/collapse`, `@alpinejs/focus`, `@alpinejs/sort` in `package.json` | ✅ Installed (unused in views) |
@@ -76,8 +76,8 @@
 | User registration | 🔧 Partial | **Student self-registration added:** `app/Livewire/Auth/StudentRegister.php` + `resources/views/livewire/auth/student-register.blade.php`; route `GET /register/{school:slug}` (school resolved by slug); collects student name/age + guardian name/phone/email; no password required; admin students page shows a shareable registration link with Copy button. Teacher/admin self-registration still not implemented. |
 | Password reset | ❌ Not Started | No forgot-password route, no reset-password flow. `password_reset_tokens` table exists from default migration but nothing uses it. |
 | Email verification | ❌ Not Started | `email_verified_at` column exists in users migration but `MustVerifyEmail` interface not implemented. |
-| Role-based access control (Spatie) | 📦 Package only | `spatie/laravel-permission` installed. No Spatie migrations run. `HasRoles` trait NOT on `User` model. No role or permission seeders. |
-| Custom role system | 🔧 Partial | `role` string column on `users` (`school_admin`, `teacher`, `student`, `super_admin`). `CheckRole` middleware (`app/Http/Middleware/CheckRole.php`) aliased as `'role'` in `bootstrap/app.php`. Helper methods `isTeacher()`, `isStudent()`, etc. on `User`. No routes actually protected with `role:` middleware. |
+| Role-based access control (Spatie) | ✅ Done | Migrations run; `HasRoles` on `User`; `RoleSeeder` creates `super_admin`, `school_admin`, `teacher`, `student` roles with 20 permissions; `assignRole()` called in `Setup`, `Students`, `Teachers`, `StudentRegister`; existing users backfilled; `$user->hasRole()`, `$user->can()`, `@role`/`@can` Blade directives all functional. |
+| Custom role system | ✅ Done | Spatie `RoleMiddleware` replaces `CheckRole` as `role` alias in `bootstrap/app.php`. Routes protected: `/lessons`, `/groups`, `/students` → `role:school_admin\|teacher`; `/teachers` → `role:school_admin`. Helper methods `isTeacher()` etc. retained for query scoping. |
 | Laravel Policies | ❌ Not Started | `app/Policies/` directory exists but contains only `.gitkeep`. No policy files. |
 | Student invite system | 🔧 Partial | No `invites` table or invite codes. However a **shareable self-registration link** (`/register/{school:slug}`) is displayed and copyable in the admin students page, achieving similar onboarding flow without token-based invites. |
 | Teacher management (add/edit teachers) | ✅ Done | `app/Livewire/Teachers.php` + `resources/views/livewire/teachers.blade.php`; full CRUD (create, edit, delete); shows school_admin and teacher roles; prevents self-delete; route `GET /teachers` in `web.php`. Wired to `StoreTeacherRequest`. |
@@ -90,7 +90,7 @@
 
 | Feature | Status | Evidence |
 |---------|--------|----------|
-| Weekly timetable / schedule view | ✅ Done | `Dashboard` Livewire component (`app/Livewire/Dashboard.php`) + `livewire/dashboard.blade.php`; 5-column Mon–Fri grid; prev/next week navigation via `Carbon`; lessons grouped by `day_of_week`. Route `GET /dashboard`. |
+| Weekly timetable / schedule view | ✅ Done | `Dashboard` Livewire component + `livewire/dashboard.blade.php`; **7-column Sun–Sat grid** (Sunday-first per Islamic/Arab convention); `startOfWeek(Carbon::SUNDAY)`; prev/next week navigation; lessons grouped by `day_of_week` (ISO 1–7). Route `GET /dashboard`. |
 | Lesson detail modal (from dashboard) | ✅ Done | `LessonModal` Livewire component (`app/Livewire/LessonModal.php`) + `livewire/lesson-modal.blade.php`; embedded in dashboard via `@livewire('lesson-modal', ...)`. Tabs: Attendance, Assignments. |
 | Create/Edit Group (Halaqah) | ✅ Done | `Groups` Livewire component (`app/Livewire/Groups.php`) + `livewire/groups.blade.php`; full CRUD (create, edit, delete); teacher assignment; student management panel with checkbox sync. Route `GET /groups`. Wired to `StoreGroupRequest`. |
 | Delete Group | ✅ Done | `delete()` method in `Groups.php` with `wire:confirm` in view. |
@@ -125,7 +125,7 @@
 
 | Feature | Status | Evidence |
 |---------|--------|----------|
-| Weekly calendar view | ✅ Done | `Dashboard.php` renders a 5-day grid. `Lesson` model has `day_of_week`, `start_time`, `end_time`, `room`, `title`. |
+| Weekly calendar view | ✅ Done | `Dashboard.php` renders a **7-day Sun–Sat grid**. `Lesson` model has `day_of_week` (ISO tinyInt 1–7), `start_time`, `end_time`, `room`, `title`. Day dropdown in `LessonForm` also ordered Sun-first. |
 | Create lesson (add to schedule) | ✅ Done | `LessonForm::save()` with `Lesson::create()`; form includes all scheduling fields. (`app/Livewire/Schedule/LessonForm.php`, route `GET /lessons`) |
 | Edit lesson | ✅ Done | `LessonForm::edit()` + `save()` with `editingId`; pre-fills all fields including status. |
 | Delete / cancel lesson | ✅ Done | `LessonForm::delete()` calls `Lesson::findOrFail($id)->delete()`; auto-scoped by `BelongsToTenant`; `wire:confirm` in view. |
@@ -229,10 +229,10 @@ Cross-referencing the ERD entities against actual migration files:
 | `assignment_student` | `2024_01_01_000007_create_assignment_student_table.php` | ✅ Done | Has `assignment_id`, `student_id`, `status`, `note`. Fully matches needs. |
 | `attendances` | `2024_01_01_000008_create_attendances_table.php` | 🔧 Partial | Has `lesson_id`, `student_id`, `date`, `status`. Unique constraint present. Missing: `note`, `marked_at` (uses `created_at`). |
 | `tenants` (separate) | — | ❌ Not Started | No separate `tenants` table. School doubles as tenant. |
-| `roles` | — | ❌ Not Started | No Spatie permission migrations run. |
-| `permissions` | — | ❌ Not Started | No Spatie permission migrations run. |
-| `role_user` | — | ❌ Not Started | |
-| `permission_role` | — | ❌ Not Started | |
+| `roles` | `2026_04_18_113224_create_permission_tables.php` | ✅ Done | Spatie permission tables created via `vendor:publish` + `migrate`. |
+| `permissions` | `2026_04_18_113224_create_permission_tables.php` | ✅ Done | 20 permissions seeded via `RoleSeeder`. |
+| `model_has_roles` | `2026_04_18_113224_create_permission_tables.php` | ✅ Done | Pivot for user↔role; all existing users backfilled. |
+| `role_has_permissions` | `2026_04_18_113224_create_permission_tables.php` | ✅ Done | Pivot for role↔permission; populated by `RoleSeeder`. |
 | `sessions` (Laravel built-in) | `0001_01_01_000000_create_users_table.php` | ✅ Done | Laravel session table (not Halaqah sessions). |
 | `cache` | `0001_01_01_000001_create_cache_table.php` | ✅ Done | Standard Laravel cache table. |
 | `jobs` / `job_batches` / `failed_jobs` | `0001_01_01_000002_create_jobs_table.php` | ✅ Done | Queue infrastructure. |
@@ -255,7 +255,7 @@ Cross-referencing the ERD entities against actual migration files:
 | Category | ✅ Done | 🔧 Partial | ❌ Not Started | 📦 Pkg Only |
 |----------|---------|-----------|--------------|------------|
 | 1. Multi-tenancy & Organization | 3 | 1 | 2 | 0 |
-| 2. Authentication & Authorization | 3 | 3 | 3 | 1 |
+| 2. Authentication & Authorization | 5 | 2 | 3 | 0 |
 | 3. Teacher Dashboard & Halaqah Mgmt | 6 | 0 | 5 | 0 |
 | 4. Student Management | 6 | 2 | 2 | 0 |
 | 5. Session / Class Scheduling | 5 | 0 | 3 | 0 |
@@ -264,19 +264,19 @@ Cross-referencing the ERD entities against actual migration files:
 | 8. Notifications & Alerts | 0 | 0 | 8 | 0 |
 | 9. Localization (Arabic/English) | 5 | 1 | 3 | 0 |
 | 10. Admin Panel | 2 | 0 | 6 | 0 |
-| **TOTAL** | **38** | **8** | **41** | **1** |
+| **TOTAL** | **40** | **7** | **41** | **0** |
 
 ### Overall Completion Estimate
 
 | Metric | Count | % |
 |--------|-------|---|
-| Fully Done (✅) | 38 | 43% |
-| Partial (🔧) | 8 | 9% |
+| Fully Done (✅) | 40 | 45% |
+| Partial (🔧) | 7 | 8% |
 | Not Started (❌) | 41 | 47% |
-| Pkg Only (📦) | 1 | 1% |
+| Pkg Only (📦) | 0 | 0% |
 | **Total features tracked** | **88** | — |
 
-> **Overall project completion: ~48%** (counting Partial as 50% credit: 38 + 4 = 42 / 88)
+> **Overall project completion: ~50%** (counting Partial as 50% credit: 40 + 3.5 = 43.5 / 88)
 
 ---
 
@@ -284,11 +284,8 @@ Cross-referencing the ERD entities against actual migration files:
 
 These are ordered by impact-to-effort ratio:
 
-#### Priority 1 — Run Spatie Permission Migrations + Apply HasRoles to User
-`spatie/laravel-permission` is installed but completely inert. Running migrations and adding `HasRoles` to `User` unlocks proper RBAC gates, Blade directives (`@role`, `@can`), and policy integration.
-- Commands: `php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"` then `php artisan migrate`.
-- Files to change: `app/Models/User.php` (add `use HasRoles`); create `database/seeders/RoleSeeder.php`.
-- Acceptance: `$user->hasRole('teacher')` works; roles seeded; at least one route uses `middleware('role:teacher')`.
+#### ~~Priority 1 — Run Spatie Permission Migrations + Apply HasRoles to User~~ ✅ DONE
+Migrations run, `HasRoles` on `User`, `RoleSeeder` with 4 roles + 20 permissions, routes protected, all users backfilled.
 
 #### Priority 2 — Implement User Registration + Password Reset
 Currently no teacher can self-register. `laravel/breeze` is in `require-dev` but **Breeze was never scaffolded**.
@@ -365,9 +362,9 @@ The platform collects attendance and assignment data but provides zero reporting
 - `app/Policies/` — HalaqahPolicy, AssignmentPolicy (only `.gitkeep`)
 - `resources/views/emails/` — mail templates (directory exists, empty)
 - `database/factories/` — model factories
-- `database/seeders/RoleSeeder.php` — Spatie role seeder
+- ~~`database/seeders/RoleSeeder.php` — Spatie role seeder~~ ✅ Created
 - `lang/de.json`, `lang/tr.json`, `lang/ur.json`, `lang/ms.json`, `lang/fr.json` — still empty `{}`
 
 ---
 
-*End of PRD — Updated 2026-04-18. Previous version: 4.0.0 (44% completion). Current version: 4.1.0 (48% completion). Sprint delivered: Student sibling management, guardian (ولي الأمر) fields (phone, guardian_name, age), student self-registration page (`/register/{school:slug}`), password-free student onboarding.*
+*End of PRD — Updated 2026-04-18. Previous version: 4.1.0 (48% completion). Current version: 4.2.0 (50% completion). Sprint delivered: Spatie RBAC fully activated (migrations, HasRoles, RoleSeeder, route protection, user backfill); 7-day Sun–Sat calendar grid with Sunday-first ordering per Islamic/Arab convention.*

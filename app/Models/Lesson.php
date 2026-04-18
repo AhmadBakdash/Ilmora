@@ -33,6 +33,6 @@ class Lesson extends Model
 
     public function getDayNameAttribute(): string
     {
-        return ['', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'][$this->day_of_week] ?? '';
+        return ['', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][$this->day_of_week] ?? '';
     }
 }

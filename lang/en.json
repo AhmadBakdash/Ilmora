@@ -80,6 +80,8 @@
     "lessons.days.3": "Wednesday",
     "lessons.days.4": "Thursday",
     "lessons.days.5": "Friday",
+    "lessons.days.6": "Saturday",
+    "lessons.days.7": "Sunday",
 
     "groups.title": "Groups",
     "groups.subtitle": ":count groups",
