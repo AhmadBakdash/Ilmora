@@ -39,8 +39,7 @@ class Dashboard extends Component
     public function getLessonsProperty()
     {
         $user = auth()->user();
-        $query = Lesson::with(['group', 'teacher'])
-            ->where('school_id', $user->school_id);
+        $query = Lesson::with(['group', 'teacher']);
         if ($user->isTeacher()) {
             $query->where('teacher_id', $user->id);
         }

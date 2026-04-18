@@ -12,11 +12,11 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
-            'role' => \App\Http\Middleware\CheckRole::class,
+            'role'   => \App\Http\Middleware\CheckRole::class,
             'school' => \App\Http\Middleware\EnsureSchoolExists::class,
         ]);
         $middleware->web(append: [
-            \App\Http\Middleware\EnsureSchoolExists::class,
+            \App\Http\Middleware\SetLocale::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

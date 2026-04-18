@@ -5,12 +5,17 @@ use App\Livewire\Setup;
 use App\Livewire\Dashboard;
 use App\Livewire\Groups;
 use App\Livewire\Students;
+use App\Livewire\Schedule\LessonForm;
+use App\Livewire\Teachers;
+use App\Livewire\Auth\StudentRegister;
 
 Route::middleware(\App\Http\Middleware\EnsureSchoolExists::class)->group(function () {
     Route::get('/setup', Setup::class)->name('setup');
 
     Route::middleware(['auth'])->group(function () {
         Route::get('/dashboard', Dashboard::class)->name('dashboard');
+        Route::get('/lessons', LessonForm::class)->name('lessons');
+        Route::get('/teachers', Teachers::class)->name('teachers');
         Route::get('/groups', Groups::class)->name('groups');
         Route::get('/students', Students::class)->name('students');
     });
@@ -23,6 +28,7 @@ Route::get('/', function () {
     return redirect()->route('setup');
 });
 
+Route::get('/register/{school:slug}', StudentRegister::class)->name('student.register');
 Route::get('/login', \App\Livewire\Auth\Login::class)->name('login');
 Route::post('/logout', function () {
     auth()->logout();

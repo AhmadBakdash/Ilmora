@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Http\Requests\StoreGroupRequest;
 use App\Models\Group;
 use App\Models\User;
 use Livewire\Component;
@@ -18,11 +19,7 @@ class Groups extends Component
 
     protected function rules(): array
     {
-        return [
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'teacher_id' => 'required|exists:users,id',
-        ];
+        return (new StoreGroupRequest())->rules();
     }
 
     public function mount(): void
@@ -37,7 +34,6 @@ class Groups extends Component
             'name' => $this->name,
             'description' => $this->description,
             'teacher_id' => $this->teacher_id,
-            'school_id' => auth()->user()->school_id,
         ];
         if ($this->editingId) {
             Group::find($this->editingId)->update($data);
@@ -81,7 +77,7 @@ class Groups extends Component
     {
         $schoolId = auth()->user()->school_id;
         return view('livewire.groups', [
-            'groups' => Group::with(['teacher', 'students'])->where('school_id', $schoolId)->get(),
+            'groups'   => Group::with(['teacher', 'students'])->get(),
             'teachers' => User::where('school_id', $schoolId)->whereIn('role', ['teacher', 'school_admin'])->get(),
             'students' => User::where('school_id', $schoolId)->where('role', 'student')->get(),
         ])->layout('components.layouts.app');

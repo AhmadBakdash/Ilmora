@@ -40,7 +40,7 @@ class Setup extends Component
         ]);
         auth()->login($user);
         $this->done = true;
-        $this->redirect(route('dashboard'), navigate: true);
+        $this->redirect(route('dashboard'));
     }
 
     public function render()

@@ -20,7 +20,7 @@ class Login extends Component
         $this->validate();
         if (Auth::attempt(['email' => $this->email, 'password' => $this->password])) {
             session()->regenerate();
-            $this->redirect(route('dashboard'), navigate: true);
+            $this->redirect(route('dashboard'));
         } else {
             $this->addError('email', 'Invalid credentials.');
         }
