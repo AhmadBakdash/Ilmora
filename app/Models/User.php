@@ -5,14 +5,15 @@ namespace App\Models;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasRoles;
 
-    protected $fillable = ['name', 'email', 'password', 'school_id', 'role'];
+    protected $fillable = ['name', 'email', 'phone', 'guardian_name', 'age', 'password', 'school_id', 'role', 'locale'];
     protected $hidden = ['password', 'remember_token'];
-    protected $casts = ['email_verified_at' => 'datetime', 'password' => 'hashed'];
+    protected $casts = ['email_verified_at' => 'datetime'];
 
     public function school()
     {
@@ -32,6 +33,11 @@ class User extends Authenticatable
     public function lessons()
     {
         return $this->hasMany(Lesson::class, 'teacher_id');
+    }
+
+    public function siblings(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'student_siblings', 'student_id', 'sibling_id');
     }
 
     public function isTeacher(): bool { return $this->role === 'teacher'; }

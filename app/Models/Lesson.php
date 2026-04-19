@@ -2,16 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
 
 class Lesson extends Model
 {
-    protected $fillable = ['school_id', 'group_id', 'teacher_id', 'title', 'day_of_week', 'start_time', 'end_time', 'room'];
+    use BelongsToTenant;
 
-    public function school()
-    {
-        return $this->belongsTo(School::class);
-    }
+    protected $fillable = ['school_id', 'group_id', 'teacher_id', 'title', 'day_of_week', 'start_time', 'end_time', 'room', 'status'];
 
     public function group()
     {
@@ -35,6 +33,6 @@ class Lesson extends Model
 
     public function getDayNameAttribute(): string
     {
-        return ['', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'][$this->day_of_week] ?? '';
+        return ['', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][$this->day_of_week] ?? '';
     }
 }

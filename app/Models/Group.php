@@ -2,16 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
 
 class Group extends Model
 {
-    protected $fillable = ['school_id', 'name', 'description', 'teacher_id'];
+    use BelongsToTenant;
 
-    public function school()
-    {
-        return $this->belongsTo(School::class);
-    }
+    protected $fillable = ['school_id', 'name', 'description', 'teacher_id'];
 
     public function teacher()
     {

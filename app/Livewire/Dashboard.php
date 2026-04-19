@@ -13,7 +13,7 @@ class Dashboard extends Component
 
     public function mount(): void
     {
-        $this->weekStart = Carbon::now()->startOfWeek()->format('Y-m-d');
+        $this->weekStart = Carbon::now()->startOfWeek(Carbon::SUNDAY)->format('Y-m-d');
     }
 
     public function previousWeek(): void
@@ -39,8 +39,7 @@ class Dashboard extends Component
     public function getLessonsProperty()
     {
         $user = auth()->user();
-        $query = Lesson::with(['group', 'teacher'])
-            ->where('school_id', $user->school_id);
+        $query = Lesson::with(['group', 'teacher']);
         if ($user->isTeacher()) {
             $query->where('teacher_id', $user->id);
         }
@@ -56,7 +55,10 @@ class Dashboard extends Component
     public function render()
     {
         return view('livewire.dashboard', [
-            'days' => ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+            'days' => [
+                1 => 'Monday', 2 => 'Tuesday', 3 => 'Wednesday',
+                4 => 'Thursday', 5 => 'Friday', 6 => 'Saturday', 7 => 'Sunday',
+            ],
             'weekStartDate' => Carbon::parse($this->weekStart),
         ])->layout('components.layouts.app');
     }

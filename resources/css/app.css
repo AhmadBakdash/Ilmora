@@ -1,3 +1,96 @@
+/* Google Fonts — Inter (Latin), Noto Naskh Arabic, Amiri (Quran)
+   Production: replace with @fontsource npm packages loaded via Vite. */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ── Base ─────────────────────────────────────────────── */
+@layer base {
+    :root {
+        --sidebar-width: 272px;
+    }
+
+    html {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Auto-switch to Arabic font when locale is ar/ur */
+    html[lang="ar"],
+    html[lang="ur"] {
+        font-family: 'Noto Naskh Arabic', serif;
+        letter-spacing: 0;
+        line-height: 1.75;
+    }
+
+    body {
+        @apply bg-cream-50 text-slate-800;
+    }
+
+    .dark body {
+        @apply bg-navy-950 text-slate-100;
+    }
+
+    /* Smooth scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { @apply bg-transparent; }
+    ::-webkit-scrollbar-thumb { @apply bg-slate-300 dark:bg-slate-700 rounded-full; }
+    ::-webkit-scrollbar-thumb:hover { @apply bg-slate-400 dark:bg-slate-600; }
+}
+
+/* ── Components ───────────────────────────────────────── */
+@layer components {
+    /* Quran text styling */
+    .quran-text {
+        font-family: 'Amiri', 'Noto Naskh Arabic', serif;
+        @apply text-xl leading-loose text-right;
+    }
+
+    /* Nav item base */
+    .nav-item {
+        @apply flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium
+               transition-all duration-200 cursor-pointer select-none;
+    }
+    .nav-item-default {
+        @apply text-slate-500 dark:text-slate-400
+               hover:bg-slate-100 dark:hover:bg-navy-700
+               hover:text-slate-800 dark:hover:text-slate-100;
+    }
+    .nav-item-active {
+        @apply bg-emerald-50 dark:bg-emerald-900/30
+               text-emerald-700 dark:text-emerald-300
+               shadow-glow-sm;
+    }
+
+    /* Form input base */
+    .field {
+        @apply w-full rounded-xl border border-slate-200 dark:border-slate-700
+               bg-white dark:bg-navy-800
+               text-slate-800 dark:text-slate-100
+               placeholder-slate-400 dark:placeholder-slate-500
+               px-4 py-2.5 text-sm
+               focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500
+               transition duration-150;
+    }
+
+    /* Badge base */
+    .badge {
+        @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium;
+    }
+
+    /* Time-grid container */
+    .timetable-col {
+        @apply relative flex-1 border-s border-slate-100 dark:border-navy-700;
+    }
+}
+
+/* ── Utilities ────────────────────────────────────────── */
+@layer utilities {
+    .text-balance { text-wrap: balance; }
+
+    /* Sidebar width utility */
+    .w-sidebar { width: var(--sidebar-width); }
+    .ms-sidebar { margin-inline-start: var(--sidebar-width); }
+}
