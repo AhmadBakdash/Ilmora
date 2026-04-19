@@ -5,7 +5,6 @@
     "nav.teachers": "Enseignants",
     "nav.students": "Élèves",
     "nav.logout": "Déconnexion",
-
     "setup.tagline": "Configurer le système de gestion scolaire",
     "setup.create_school": "Créer votre école",
     "setup.school_name": "Nom de l'école",
@@ -14,12 +13,10 @@
     "setup.password": "Mot de passe",
     "setup.confirm_password": "Confirmer le mot de passe",
     "setup.submit": "Créer l'école et le compte administrateur",
-
     "auth.tagline": "Connectez-vous à votre compte",
     "auth.email": "E-mail",
     "auth.password": "Mot de passe",
     "auth.submit": "Se connecter",
-
     "register.title": "Inscription de l'élève",
     "register.subtitle": "Veuillez remplir le formulaire ci-dessous pour vous inscrire à l'école.",
     "register.section.student": "Données de l'élève",
@@ -33,13 +30,11 @@
     "register.btn.submitting": "Inscription en cours…",
     "register.success_title": "Inscription réussie",
     "register.success_body": "Vos données ont été reçues. L'école vous contactera bientôt.",
-
     "dashboard.title": "Emploi du temps hebdomadaire",
     "dashboard.prev": "← Précédent",
     "dashboard.next": "Suivant →",
     "dashboard.add_lesson": "+ Ajouter un cours",
     "dashboard.no_lessons": "Aucun cours",
-
     "lessons.title": "Cours",
     "lessons.subtitle": ":count cours",
     "lessons.confirm_delete": "Supprimer ce cours ? Les devoirs et présences associés seront également supprimés.",
@@ -82,7 +77,6 @@
     "lessons.days.5": "Vendredi",
     "lessons.days.6": "Samedi",
     "lessons.days.7": "Dimanche",
-
     "groups.title": "Groupes",
     "groups.subtitle": ":count groupe(s)",
     "groups.add": "+ Nouveau groupe",
@@ -104,7 +98,6 @@
     "groups.empty": "Aucun groupe pour l'instant.",
     "groups.empty_hint": "Créez votre premier groupe pour commencer.",
     "groups.confirm_delete": "Supprimer ce groupe ? Tous les cours associés seront également supprimés.",
-
     "teachers.title": "Enseignants",
     "teachers.subtitle": ":count enseignant(s)",
     "teachers.confirm_delete": "Supprimer :name ? Cela ne peut pas être annulé.",
@@ -131,7 +124,6 @@
     "teachers.groups_count": ":count groupe(s)",
     "teachers.empty": "Aucun enseignant pour l'instant.",
     "teachers.empty_hint": "Le compte administrateur compte comme enseignant. Ajoutez-en d'autres via le bouton ci-dessus.",
-
     "students.title": "Élèves",
     "students.subtitle": ":count élève(s)",
     "students.search": "Rechercher un élève…",
@@ -163,7 +155,6 @@
     "students.col.siblings": "Frères/Sœurs",
     "students.col.actions": "Actions",
     "students.empty": "Aucun élève pour l'instant.",
-
     "modal.tab.attendance": "Présence",
     "modal.tab.assignments": "Devoirs",
     "modal.attendance.date": "Date :",
@@ -201,5 +192,7 @@
     "modal.grading.needs_repeat": "À répéter ↺",
     "modal.grading.save": "Enregistrer les évaluations",
     "modal.grading.no_students": "Aucun élève associé à ce devoir.",
-    "modal.grading.grade_btn": "Évaluer les élèves ←"
+    "modal.grading.grade_btn": "Évaluer les élèves ←",
+    "lessons.conflict_group": "Ce groupe a déjà un cours planifié à cette heure.",
+    "lessons.conflict_teacher": "Cet enseignant a déjà un autre cours à cette heure."
 }

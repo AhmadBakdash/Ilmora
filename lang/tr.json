@@ -5,7 +5,6 @@
     "nav.teachers": "Öğretmenler",
     "nav.students": "Öğrenciler",
     "nav.logout": "Çıkış Yap",
-
     "setup.tagline": "Okul Yönetim Sistemini Kur",
     "setup.create_school": "Okulunuzu Oluşturun",
     "setup.school_name": "Okul Adı",
@@ -14,12 +13,10 @@
     "setup.password": "Şifre",
     "setup.confirm_password": "Şifreyi Onayla",
     "setup.submit": "Okul ve Yönetici Hesabı Oluştur",
-
     "auth.tagline": "Hesabınıza Giriş Yapın",
     "auth.email": "E-posta",
     "auth.password": "Şifre",
     "auth.submit": "Giriş Yap",
-
     "register.title": "Öğrenci Kaydı",
     "register.subtitle": "Okula kayıt olmak için lütfen aşağıdaki formu doldurun.",
     "register.section.student": "Öğrenci Bilgileri",
@@ -33,13 +30,11 @@
     "register.btn.submitting": "Kaydediliyor…",
     "register.success_title": "Kayıt Başarılı",
     "register.success_body": "Bilgileriniz alındı. Okul en kısa sürede sizinle iletişime geçecek.",
-
     "dashboard.title": "Haftalık Program",
     "dashboard.prev": "← Önceki",
     "dashboard.next": "Sonraki →",
     "dashboard.add_lesson": "+ Ders Ekle",
     "dashboard.no_lessons": "Ders Yok",
-
     "lessons.title": "Dersler",
     "lessons.subtitle": ":count ders",
     "lessons.confirm_delete": "Bu ders silinsin mi? İlgili ödevler ve devam kayıtları da silinecektir.",
@@ -82,7 +77,6 @@
     "lessons.days.5": "Cuma",
     "lessons.days.6": "Cumartesi",
     "lessons.days.7": "Pazar",
-
     "groups.title": "Gruplar",
     "groups.subtitle": ":count grup",
     "groups.add": "+ Yeni Grup",
@@ -104,7 +98,6 @@
     "groups.empty": "Henüz grup yok.",
     "groups.empty_hint": "Başlamak için ilk grubunuzu oluşturun.",
     "groups.confirm_delete": "Bu grup silinsin mi? İlgili tüm dersler de silinecektir.",
-
     "teachers.title": "Öğretmenler",
     "teachers.subtitle": ":count öğretmen",
     "teachers.confirm_delete": ":name silinsin mi? Bu işlem geri alınamaz.",
@@ -131,7 +124,6 @@
     "teachers.groups_count": ":count grup",
     "teachers.empty": "Henüz öğretmen yok.",
     "teachers.empty_hint": "Yönetici hesabı öğretmen sayılır. Yukarıdaki düğmeyle daha fazlasını ekleyin.",
-
     "students.title": "Öğrenciler",
     "students.subtitle": ":count öğrenci",
     "students.search": "Öğrenci ara…",
@@ -163,7 +155,6 @@
     "students.col.siblings": "Kardeşler",
     "students.col.actions": "İşlemler",
     "students.empty": "Henüz öğrenci yok.",
-
     "modal.tab.attendance": "Devam",
     "modal.tab.assignments": "Ödevler",
     "modal.attendance.date": "Tarih:",
@@ -201,5 +192,7 @@
     "modal.grading.needs_repeat": "Tekrar Gerekli ↺",
     "modal.grading.save": "Değerlendirmeleri Kaydet",
     "modal.grading.no_students": "Bu ödevle ilişkili öğrenci yok.",
-    "modal.grading.grade_btn": "Öğrencileri Değerlendir ←"
+    "modal.grading.grade_btn": "Öğrencileri Değerlendir ←",
+    "lessons.conflict_group": "Bu grubun bu saatte zaten planlanmış bir dersi var.",
+    "lessons.conflict_teacher": "Bu öğretmenin bu saatte başka bir dersi var."
 }

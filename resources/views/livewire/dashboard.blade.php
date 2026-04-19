@@ -172,26 +172,82 @@ $color = fn($lesson) => $palette[($lesson->group_id ?? $lesson->id ?? 0) % count
 
                     {{-- Lesson cards --}}
                     @if($this->lessons->has($isoDay))
-                        @foreach($this->lessons[$isoDay] as $lesson)
+                        @php
+                            $dayLessons = $this->lessons[$isoDay]->sortBy('start_time')->values();
+
+                            /* ── Step 1: assign each lesson a column index ── */
+                            $colEnds      = [];   // end_minute of the last lesson placed in each column
+                            $lessonColIdx = [];   // lesson id → column index
+
+                            foreach ($dayLessons as $l) {
+                                [$lsh, $lsm] = array_pad(explode(':', substr($l->start_time, 0, 5)), 2, '0');
+                                [$leh, $lem] = array_pad(explode(':', substr($l->end_time,   0, 5)), 2, '0');
+                                $lsMin = (int)$lsh * 60 + (int)$lsm;
+                                $leMin = (int)$leh * 60 + (int)$lem;
+
+                                $placed = false;
+                                foreach ($colEnds as $ci => $cEnd) {
+                                    if ($cEnd <= $lsMin) {
+                                        $colEnds[$ci]       = $leMin;
+                                        $lessonColIdx[$l->id] = $ci;
+                                        $placed = true;
+                                        break;
+                                    }
+                                }
+                                if (!$placed) {
+                                    $lessonColIdx[$l->id] = count($colEnds);
+                                    $colEnds[]            = $leMin;
+                                }
+                            }
+
+                            /* ── Step 2: for each lesson, find the max column among all lessons
+                               that overlap with it — that gives the denominator for width ── */
+                            $lessonLayouts = [];
+                            foreach ($dayLessons as $l) {
+                                [$lsh, $lsm] = array_pad(explode(':', substr($l->start_time, 0, 5)), 2, '0');
+                                [$leh, $lem] = array_pad(explode(':', substr($l->end_time,   0, 5)), 2, '0');
+                                $lsMin = (int)$lsh * 60 + (int)$lsm;
+                                $leMin = (int)$leh * 60 + (int)$lem;
+
+                                $maxCol = $lessonColIdx[$l->id];
+                                foreach ($dayLessons as $other) {
+                                    [$osh, $osm] = array_pad(explode(':', substr($other->start_time, 0, 5)), 2, '0');
+                                    [$oeh, $oem] = array_pad(explode(':', substr($other->end_time,   0, 5)), 2, '0');
+                                    $osMin = (int)$osh * 60 + (int)$osm;
+                                    $oeMin = (int)$oeh * 60 + (int)$oem;
+                                    if ($osMin < $leMin && $oeMin > $lsMin) {
+                                        $maxCol = max($maxCol, $lessonColIdx[$other->id]);
+                                    }
+                                }
+                                $lessonLayouts[$l->id] = ['col' => $lessonColIdx[$l->id], 'total' => $maxCol + 1];
+                            }
+                        @endphp
+
+                        @foreach($dayLessons as $lesson)
                             @php
                                 [$sh, $sm] = array_pad(explode(':', substr($lesson->start_time, 0, 5)), 2, '0');
-                                [$eh, $em] = array_pad(explode(':', substr($lesson->end_time, 0, 5)), 2, '0');
-                                $startMin  = ((int)$sh - $gridStart) * 60 + (int)$sm;
-                                $endMin    = ((int)$eh - $gridStart) * 60 + (int)$em;
-                                $topPx     = max(0, round(($startMin / 60) * $hourPx));
-                                $heightPx  = max(36, round((($endMin - $startMin) / 60) * $hourPx));
-                                $c         = $color($lesson);
-                                $short     = $heightPx < 60;
+                                [$eh, $em] = array_pad(explode(':', substr($lesson->end_time,   0, 5)), 2, '0');
+                                $startMin = ((int)$sh - $gridStart) * 60 + (int)$sm;
+                                $endMin   = ((int)$eh - $gridStart) * 60 + (int)$em;
+                                $topPx    = max(0, round(($startMin / 60) * $hourPx));
+                                $heightPx = max(36, round((($endMin - $startMin) / 60) * $hourPx));
+                                $c        = $color($lesson);
+                                $short    = $heightPx < 60;
+
+                                $layout   = $lessonLayouts[$lesson->id];
+                                $colW     = round(100 / $layout['total'], 4);
+                                $colL     = round($layout['col'] * $colW, 4);
                             @endphp
 
                             <div
                                 wire:click="selectLesson({{ $lesson->id }})"
-                                class="absolute inset-x-1 rounded-xl {{ $c['bg'] }} {{ $c['border'] }}
+                                class="absolute rounded-xl {{ $c['bg'] }} {{ $c['border'] }}
                                        px-2 py-1 cursor-pointer overflow-hidden
                                        hover:brightness-95 dark:hover:brightness-110
                                        transition-all duration-150 hover:shadow-card-md hover:-translate-y-px
-                                       group z-[1]"
-                                style="top: {{ $topPx }}px; height: {{ $heightPx }}px;"
+                                       group z-[1] hover:z-[2]"
+                                style="top:{{ $topPx }}px; height:{{ $heightPx }}px;
+                                       left:calc({{ $colL }}% + 2px); width:calc({{ $colW }}% - 4px);"
                             >
                                 <p class="text-[11px] font-semibold truncate leading-tight {{ $c['title'] }}">
                                     {{ $lesson->title }}

@@ -5,7 +5,6 @@
     "nav.teachers": "المعلمون",
     "nav.students": "الطلاب",
     "nav.logout": "تسجيل الخروج",
-
     "setup.tagline": "إعداد نظام إدارة المدرسة",
     "setup.create_school": "إنشاء مدرستك",
     "setup.school_name": "اسم المدرسة",
@@ -14,12 +13,10 @@
     "setup.password": "كلمة المرور",
     "setup.confirm_password": "تأكيد كلمة المرور",
     "setup.submit": "إنشاء المدرسة وحساب المشرف",
-
     "auth.tagline": "تسجيل الدخول إلى حسابك",
     "auth.email": "البريد الإلكتروني",
     "auth.password": "كلمة المرور",
     "auth.submit": "تسجيل الدخول",
-
     "register.title": "تسجيل الطالب",
     "register.subtitle": "يرجى تعبئة البيانات أدناه للتسجيل في المدرسة.",
     "register.section.student": "بيانات الطالب",
@@ -33,13 +30,11 @@
     "register.btn.submitting": "جاري التسجيل…",
     "register.success_title": "تم التسجيل بنجاح",
     "register.success_body": "تم استلام بياناتك. ستتواصل معك المدرسة قريبًا.",
-
     "dashboard.title": "الجدول الأسبوعي",
     "dashboard.prev": "← السابق",
     "dashboard.next": "التالي →",
     "dashboard.add_lesson": "+ إضافة درس",
     "dashboard.no_lessons": "لا توجد دروس",
-
     "lessons.title": "الدروس",
     "lessons.subtitle": ":count درس",
     "lessons.confirm_delete": "حذف هذا الدرس؟ سيتم حذف الواجبات وسجلات الحضور المرتبطة به أيضًا.",
@@ -82,7 +77,6 @@
     "lessons.days.5": "الجمعة",
     "lessons.days.6": "السبت",
     "lessons.days.7": "الأحد",
-
     "groups.title": "المجموعات",
     "groups.subtitle": ":count مجموعة",
     "groups.add": "+ مجموعة جديدة",
@@ -104,7 +98,6 @@
     "groups.empty": "لا توجد مجموعات بعد.",
     "groups.empty_hint": "أنشئ مجموعتك الأولى للبدء.",
     "groups.confirm_delete": "حذف هذه المجموعة؟ سيتم حذف جميع الدروس المرتبطة بها أيضًا.",
-
     "teachers.title": "المعلمون",
     "teachers.subtitle": ":count معلم",
     "teachers.confirm_delete": "حذف :name؟ لا يمكن التراجع عن هذا.",
@@ -131,7 +124,6 @@
     "teachers.groups_count": ":count مجموعة",
     "teachers.empty": "لا يوجد معلمون بعد.",
     "teachers.empty_hint": "حساب المشرف يُحسب كمعلم. أضف المزيد باستخدام الزر أعلاه.",
-
     "students.title": "الطلاب",
     "students.subtitle": ":count طالب",
     "students.search": "البحث عن طالب…",
@@ -163,7 +155,6 @@
     "students.col.siblings": "الأشقاء",
     "students.col.actions": "الإجراءات",
     "students.empty": "لا يوجد طلاب بعد.",
-
     "modal.tab.attendance": "الحضور",
     "modal.tab.assignments": "الواجبات",
     "modal.attendance.date": "التاريخ:",
@@ -201,5 +192,7 @@
     "modal.grading.needs_repeat": "يحتاج تكرار ↺",
     "modal.grading.save": "حفظ التقييمات",
     "modal.grading.no_students": "لا يوجد طلاب مرتبطون بهذا الواجب.",
-    "modal.grading.grade_btn": "تقييم الطلاب ←"
+    "modal.grading.grade_btn": "تقييم الطلاب ←",
+    "lessons.conflict_group": "هذه المجموعة لديها حصة مجدولة في هذا الوقت بالفعل.",
+    "lessons.conflict_teacher": "هذا المعلم لديه حصة أخرى في هذا الوقت."
 }

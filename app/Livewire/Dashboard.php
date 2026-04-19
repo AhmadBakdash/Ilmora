@@ -38,12 +38,10 @@ class Dashboard extends Component
 
     public function getLessonsProperty()
     {
-        $user = auth()->user();
-        $query = Lesson::with(['group', 'teacher']);
-        if ($user->isTeacher()) {
-            $query->where('teacher_id', $user->id);
-        }
-        return $query->get()->groupBy('day_of_week');
+        return Lesson::with(['group', 'teacher'])
+            ->orderBy('start_time')
+            ->get()
+            ->groupBy('day_of_week');
     }
 
     public function getSelectedLessonProperty()

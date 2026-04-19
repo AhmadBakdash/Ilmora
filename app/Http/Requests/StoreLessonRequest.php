@@ -17,7 +17,7 @@ class StoreLessonRequest extends FormRequest
             'title'       => 'required|string|max:255',
             'group_id'    => 'required|exists:groups,id',
             'teacher_id'  => 'required|exists:users,id',
-            'day_of_week' => 'required|integer|between:1,5',
+            'day_of_week' => 'required|integer|between:1,7',
             'start_time'  => 'required|date_format:H:i',
             'end_time'    => 'required|date_format:H:i|after:start_time',
             'room'        => 'nullable|string|max:100',

@@ -5,7 +5,6 @@
     "nav.teachers": "Guru",
     "nav.students": "Pelajar",
     "nav.logout": "Log Keluar",
-
     "setup.tagline": "Sediakan Sistem Pengurusan Sekolah",
     "setup.create_school": "Buat Sekolah Anda",
     "setup.school_name": "Nama Sekolah",
@@ -14,12 +13,10 @@
     "setup.password": "Kata Laluan",
     "setup.confirm_password": "Sahkan Kata Laluan",
     "setup.submit": "Buat Sekolah dan Akaun Pentadbir",
-
     "auth.tagline": "Log Masuk ke Akaun Anda",
     "auth.email": "E-mel",
     "auth.password": "Kata Laluan",
     "auth.submit": "Log Masuk",
-
     "register.title": "Pendaftaran Pelajar",
     "register.subtitle": "Sila isi borang di bawah untuk mendaftar ke sekolah.",
     "register.section.student": "Maklumat Pelajar",
@@ -33,13 +30,11 @@
     "register.btn.submitting": "Sedang mendaftar…",
     "register.success_title": "Pendaftaran Berjaya",
     "register.success_body": "Maklumat anda telah diterima. Pihak sekolah akan menghubungi anda tidak lama lagi.",
-
     "dashboard.title": "Jadual Mingguan",
     "dashboard.prev": "← Sebelum",
     "dashboard.next": "Seterusnya →",
     "dashboard.add_lesson": "+ Tambah Pelajaran",
     "dashboard.no_lessons": "Tiada Pelajaran",
-
     "lessons.title": "Pelajaran",
     "lessons.subtitle": ":count pelajaran",
     "lessons.confirm_delete": "Padam pelajaran ini? Tugasan dan rekod kehadiran berkaitan juga akan dipadam.",
@@ -82,7 +77,6 @@
     "lessons.days.5": "Jumaat",
     "lessons.days.6": "Sabtu",
     "lessons.days.7": "Ahad",
-
     "groups.title": "Kumpulan",
     "groups.subtitle": ":count kumpulan",
     "groups.add": "+ Kumpulan Baharu",
@@ -104,7 +98,6 @@
     "groups.empty": "Tiada kumpulan lagi.",
     "groups.empty_hint": "Buat kumpulan pertama anda untuk bermula.",
     "groups.confirm_delete": "Padam kumpulan ini? Semua pelajaran berkaitan juga akan dipadam.",
-
     "teachers.title": "Guru",
     "teachers.subtitle": ":count guru",
     "teachers.confirm_delete": "Padam :name? Tindakan ini tidak boleh dibatalkan.",
@@ -131,7 +124,6 @@
     "teachers.groups_count": ":count kumpulan",
     "teachers.empty": "Tiada guru lagi.",
     "teachers.empty_hint": "Akaun pentadbir dikira sebagai guru. Tambah lebih ramai menggunakan butang di atas.",
-
     "students.title": "Pelajar",
     "students.subtitle": ":count pelajar",
     "students.search": "Cari pelajar…",
@@ -163,7 +155,6 @@
     "students.col.siblings": "Adik-beradik",
     "students.col.actions": "Tindakan",
     "students.empty": "Tiada pelajar lagi.",
-
     "modal.tab.attendance": "Kehadiran",
     "modal.tab.assignments": "Tugasan",
     "modal.attendance.date": "Tarikh:",
@@ -201,5 +192,7 @@
     "modal.grading.needs_repeat": "Perlu Ulang ↺",
     "modal.grading.save": "Simpan Penilaian",
     "modal.grading.no_students": "Tiada pelajar dikaitkan dengan tugasan ini.",
-    "modal.grading.grade_btn": "Nilai Pelajar ←"
+    "modal.grading.grade_btn": "Nilai Pelajar ←",
+    "lessons.conflict_group": "Kumpulan ini sudah mempunyai pelajaran yang dijadualkan pada masa ini.",
+    "lessons.conflict_teacher": "Guru ini sudah mempunyai pelajaran lain pada masa ini."
 }

@@ -64,6 +64,32 @@ class LessonForm extends Component
     {
         $data = $this->validate();
 
+        $excludeId = $this->editingId ?? 0;
+
+        $groupConflict = Lesson::where('group_id', $this->group_id)
+            ->where('day_of_week', $this->day_of_week)
+            ->where('id', '!=', $excludeId)
+            ->where('start_time', '<', $this->end_time)
+            ->where('end_time', '>', $this->start_time)
+            ->exists();
+
+        if ($groupConflict) {
+            $this->addError('start_time', __('lessons.conflict_group'));
+            return;
+        }
+
+        $teacherConflict = Lesson::where('teacher_id', $this->teacher_id)
+            ->where('day_of_week', $this->day_of_week)
+            ->where('id', '!=', $excludeId)
+            ->where('start_time', '<', $this->end_time)
+            ->where('end_time', '>', $this->start_time)
+            ->exists();
+
+        if ($teacherConflict) {
+            $this->addError('start_time', __('lessons.conflict_teacher'));
+            return;
+        }
+
         if ($this->editingId) {
             $lesson = Lesson::findOrFail($this->editingId);
             $this->authorize('update', $lesson);
