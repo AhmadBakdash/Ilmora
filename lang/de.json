@@ -5,7 +5,6 @@
     "nav.teachers": "Lehrer",
     "nav.students": "Schüler",
     "nav.logout": "Abmelden",
-
     "setup.tagline": "Schulverwaltungssystem einrichten",
     "setup.create_school": "Ihre Schule erstellen",
     "setup.school_name": "Schulname",
@@ -14,12 +13,10 @@
     "setup.password": "Passwort",
     "setup.confirm_password": "Passwort bestätigen",
     "setup.submit": "Schule und Admin-Konto erstellen",
-
     "auth.tagline": "In Ihr Konto einloggen",
     "auth.email": "E-Mail",
     "auth.password": "Passwort",
     "auth.submit": "Einloggen",
-
     "register.title": "Schüler-Anmeldung",
     "register.subtitle": "Bitte füllen Sie das Formular aus, um sich an der Schule anzumelden.",
     "register.section.student": "Schülerdaten",
@@ -33,13 +30,11 @@
     "register.btn.submitting": "Wird angemeldet…",
     "register.success_title": "Anmeldung erfolgreich",
     "register.success_body": "Ihre Daten wurden erhalten. Die Schule wird sich bald bei Ihnen melden.",
-
     "dashboard.title": "Wochenplan",
     "dashboard.prev": "← Zurück",
     "dashboard.next": "Weiter →",
     "dashboard.add_lesson": "+ Stunde hinzufügen",
     "dashboard.no_lessons": "Keine Stunden",
-
     "lessons.title": "Stunden",
     "lessons.subtitle": ":count Stunde(n)",
     "lessons.confirm_delete": "Diese Stunde löschen? Zugehörige Hausaufgaben und Anwesenheiten werden ebenfalls gelöscht.",
@@ -82,7 +77,6 @@
     "lessons.days.5": "Freitag",
     "lessons.days.6": "Samstag",
     "lessons.days.7": "Sonntag",
-
     "groups.title": "Gruppen",
     "groups.subtitle": ":count Gruppe(n)",
     "groups.add": "+ Neue Gruppe",
@@ -104,7 +98,6 @@
     "groups.empty": "Noch keine Gruppen.",
     "groups.empty_hint": "Erstellen Sie Ihre erste Gruppe, um zu beginnen.",
     "groups.confirm_delete": "Diese Gruppe löschen? Alle zugehörigen Stunden werden ebenfalls gelöscht.",
-
     "teachers.title": "Lehrer",
     "teachers.subtitle": ":count Lehrer",
     "teachers.confirm_delete": ":name löschen? Dies kann nicht rückgängig gemacht werden.",
@@ -131,7 +124,6 @@
     "teachers.groups_count": ":count Gruppe(n)",
     "teachers.empty": "Noch keine Lehrer.",
     "teachers.empty_hint": "Das Admin-Konto zählt als Lehrer. Fügen Sie weitere über die Schaltfläche oben hinzu.",
-
     "students.title": "Schüler",
     "students.subtitle": ":count Schüler",
     "students.search": "Schüler suchen…",
@@ -163,7 +155,6 @@
     "students.col.siblings": "Geschwister",
     "students.col.actions": "Aktionen",
     "students.empty": "Noch keine Schüler.",
-
     "modal.tab.attendance": "Anwesenheit",
     "modal.tab.assignments": "Hausaufgaben",
     "modal.attendance.date": "Datum:",
@@ -201,5 +192,7 @@
     "modal.grading.needs_repeat": "Wiederholung nötig ↺",
     "modal.grading.save": "Bewertungen speichern",
     "modal.grading.no_students": "Keine Schüler dieser Hausaufgabe zugeordnet.",
-    "modal.grading.grade_btn": "Schüler bewerten ←"
+    "modal.grading.grade_btn": "Schüler bewerten ←",
+    "lessons.conflict_group": "Diese Gruppe hat zu dieser Zeit bereits eine geplante Stunde.",
+    "lessons.conflict_teacher": "Dieser Lehrer hat zu dieser Zeit bereits eine andere Stunde."
 }

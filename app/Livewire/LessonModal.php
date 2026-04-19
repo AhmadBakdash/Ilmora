@@ -67,6 +67,12 @@ class LessonModal extends Component
         }
     }
 
+    public function setAttendanceStatus(int $studentId, string $status): void
+    {
+        if (!in_array($status, ['present', 'late', 'absent'])) return;
+        $this->attendanceStatuses[$studentId] = $status;
+    }
+
     public function saveAttendance(): void
     {
         $lesson = Lesson::findOrFail($this->lessonId);

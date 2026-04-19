@@ -5,7 +5,6 @@
     "nav.teachers": "Teachers",
     "nav.students": "Students",
     "nav.logout": "Logout",
-
     "setup.tagline": "School Management Setup",
     "setup.create_school": "Create Your School",
     "setup.school_name": "School Name",
@@ -14,12 +13,10 @@
     "setup.password": "Password",
     "setup.confirm_password": "Confirm Password",
     "setup.submit": "Create School & Admin Account",
-
     "auth.tagline": "Sign in to your account",
     "auth.email": "Email",
     "auth.password": "Password",
     "auth.submit": "Sign In",
-
     "register.title": "Student Registration",
     "register.subtitle": "Fill in the details below to register at this school.",
     "register.section.student": "Student Information",
@@ -33,13 +30,11 @@
     "register.btn.submitting": "Registering…",
     "register.success_title": "Registration Complete",
     "register.success_body": "Your information has been submitted. The school will be in touch soon.",
-
     "dashboard.title": "Weekly Timetable",
     "dashboard.prev": "← Prev",
     "dashboard.next": "Next →",
     "dashboard.add_lesson": "+ Add Lesson",
     "dashboard.no_lessons": "No lessons",
-
     "lessons.title": "Lessons",
     "lessons.subtitle": ":count lessons",
     "lessons.confirm_delete": "Delete this lesson? Its assignments and attendance records will also be removed.",
@@ -82,7 +77,6 @@
     "lessons.days.5": "Friday",
     "lessons.days.6": "Saturday",
     "lessons.days.7": "Sunday",
-
     "groups.title": "Groups",
     "groups.subtitle": ":count groups",
     "groups.add": "+ New Group",
@@ -104,7 +98,6 @@
     "groups.empty": "No groups yet.",
     "groups.empty_hint": "Create your first group to get started.",
     "groups.confirm_delete": "Delete this group? All lessons linked to it will also be removed.",
-
     "teachers.title": "Teachers",
     "teachers.subtitle": ":count teachers",
     "teachers.confirm_delete": "Delete :name? This cannot be undone.",
@@ -131,7 +124,6 @@
     "teachers.groups_count": ":count group(s)",
     "teachers.empty": "No teachers yet.",
     "teachers.empty_hint": "The school admin account counts as a teacher. Add more using the button above.",
-
     "students.title": "Students",
     "students.subtitle": ":count students",
     "students.search": "Search students…",
@@ -163,7 +155,6 @@
     "students.col.siblings": "Siblings",
     "students.col.actions": "Actions",
     "students.empty": "No students yet.",
-
     "modal.tab.attendance": "Attendance",
     "modal.tab.assignments": "Assignments",
     "modal.attendance.date": "Date:",
@@ -201,5 +192,7 @@
     "modal.grading.needs_repeat": "Needs Repeat ↺",
     "modal.grading.save": "Save Grades",
     "modal.grading.no_students": "No students attached to this assignment.",
-    "modal.grading.grade_btn": "Grade Students →"
+    "modal.grading.grade_btn": "Grade Students →",
+    "lessons.conflict_group": "This group already has a lesson scheduled at this time.",
+    "lessons.conflict_teacher": "This teacher already has another lesson at this time."
 }

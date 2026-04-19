@@ -55,18 +55,16 @@
         <div class="space-y-1.5 mb-5">
             @foreach($lesson->group->students as $student)
             @php
-                $status = $attendanceStatuses[$student->id] ?? 'present';
-                $statusColors = [
-                    'present' => 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800',
-                    'absent'  => 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800',
-                    'late'    => 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800',
-                ];
+                $st       = $attendanceStatuses[$student->id] ?? 'present';
                 $words    = explode(' ', trim($student->name));
                 $initials = mb_strtoupper(mb_substr($words[0], 0, 1) . (isset($words[1]) ? mb_substr($words[1], 0, 1) : ''));
+                $rowClass = match($st) {
+                    'absent' => 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800',
+                    'late'   => 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800',
+                    default  => 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800',
+                };
             @endphp
-            <div class="flex items-center justify-between p-3 rounded-xl border
-                        {{ $statusColors[$status] ?? $statusColors['present'] }}
-                        transition-colors duration-150">
+            <div class="flex items-center justify-between p-3 rounded-xl border transition-colors duration-150 {{ $rowClass }}">
                 <div class="flex items-center gap-2.5">
                     <div class="w-7 h-7 rounded-full bg-slate-200 dark:bg-navy-700 flex items-center justify-center
                                 text-[11px] font-bold text-slate-600 dark:text-slate-300 flex-shrink-0">
@@ -75,16 +73,21 @@
                     <span class="text-sm font-medium text-slate-700 dark:text-slate-200">{{ $student->name }}</span>
                 </div>
                 <div class="flex items-center gap-1.5">
-                    @foreach(['present' => __('modal.attendance.present'), 'late' => __('modal.attendance.late'), 'absent' => __('modal.attendance.absent')] as $val => $label)
-                    <label class="cursor-pointer">
-                        <input type="radio" wire:model.live="attendanceStatuses.{{ $student->id }}" value="{{ $val }}" class="sr-only peer">
-                        <span class="px-2.5 py-1 rounded-lg text-xs font-medium transition-all
-                                     peer-checked:{{ $val === 'present' ? 'bg-emerald-600 text-white' : ($val === 'late' ? 'bg-amber-500 text-white' : 'bg-red-600 text-white') }}
-                                     {{ $attendanceStatuses[$student->id] ?? 'present' === $val ? '' : 'bg-white dark:bg-navy-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-navy-600' }}">
-                            {{ $label }}
-                        </span>
-                    </label>
-                    @endforeach
+                    <button wire:click="setAttendanceStatus({{ $student->id }}, 'present')"
+                            class="px-2.5 py-1 rounded-lg text-xs font-medium transition-all
+                                   {{ $st === 'present' ? 'bg-emerald-600 text-white shadow-sm' : 'bg-white dark:bg-navy-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-navy-600 hover:border-emerald-400 hover:text-emerald-600' }}">
+                        {{ __('modal.attendance.present') }}
+                    </button>
+                    <button wire:click="setAttendanceStatus({{ $student->id }}, 'late')"
+                            class="px-2.5 py-1 rounded-lg text-xs font-medium transition-all
+                                   {{ $st === 'late' ? 'bg-amber-500 text-white shadow-sm' : 'bg-white dark:bg-navy-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-navy-600 hover:border-amber-400 hover:text-amber-600' }}">
+                        {{ __('modal.attendance.late') }}
+                    </button>
+                    <button wire:click="setAttendanceStatus({{ $student->id }}, 'absent')"
+                            class="px-2.5 py-1 rounded-lg text-xs font-medium transition-all
+                                   {{ $st === 'absent' ? 'bg-red-600 text-white shadow-sm' : 'bg-white dark:bg-navy-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-navy-600 hover:border-red-400 hover:text-red-600' }}">
+                        {{ __('modal.attendance.absent') }}
+                    </button>
                 </div>
             </div>
             @endforeach
@@ -193,16 +196,13 @@
             {{-- Type selector --}}
             <div class="flex gap-2 mb-4">
                 @foreach(['hifz' => __('modal.assignment.hifz'), 'murajaah' => __('modal.assignment.murajaah'), 'tilawah' => __('modal.assignment.tilawah')] as $val => $label)
-                <label class="cursor-pointer flex-1">
-                    <input type="radio" wire:model.live="assignmentType" value="{{ $val }}" class="sr-only peer">
-                    <span class="block text-center py-1.5 px-2 rounded-lg text-xs font-semibold transition-all
-                                 border border-slate-200 dark:border-navy-600
-                                 peer-checked:border-emerald-500 peer-checked:bg-emerald-600 peer-checked:text-white
-                                 bg-white dark:bg-navy-800 text-slate-600 dark:text-slate-400
-                                 hover:border-emerald-300 dark:hover:border-emerald-700">
-                        {{ $label }}
-                    </span>
-                </label>
+                <button type="button" wire:click="$set('assignmentType', '{{ $val }}')"
+                        class="flex-1 text-center py-1.5 px-2 rounded-lg text-xs font-semibold transition-all border
+                               {{ $assignmentType === $val
+                                   ? 'border-emerald-500 bg-emerald-600 text-white shadow-sm'
+                                   : 'border-slate-200 dark:border-navy-600 bg-white dark:bg-navy-800 text-slate-600 dark:text-slate-400 hover:border-emerald-300 dark:hover:border-emerald-700' }}">
+                    {{ $label }}
+                </button>
                 @endforeach
             </div>
 

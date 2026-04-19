@@ -5,7 +5,6 @@
     "nav.teachers": "اساتذہ",
     "nav.students": "طلباء",
     "nav.logout": "لاگ آؤٹ",
-
     "setup.tagline": "اسکول مینجمنٹ سسٹم ترتیب دیں",
     "setup.create_school": "اپنا اسکول بنائیں",
     "setup.school_name": "اسکول کا نام",
@@ -14,12 +13,10 @@
     "setup.password": "پاس ورڈ",
     "setup.confirm_password": "پاس ورڈ کی تصدیق کریں",
     "setup.submit": "اسکول اور ایڈمن اکاؤنٹ بنائیں",
-
     "auth.tagline": "اپنے اکاؤنٹ میں لاگ ان کریں",
     "auth.email": "ای میل",
     "auth.password": "پاس ورڈ",
     "auth.submit": "لاگ ان کریں",
-
     "register.title": "طالب علم کی رجسٹریشن",
     "register.subtitle": "اسکول میں داخلے کے لیے براہ کرم نیچے دیا گیا فارم پُر کریں۔",
     "register.section.student": "طالب علم کی معلومات",
@@ -33,13 +30,11 @@
     "register.btn.submitting": "رجسٹریشن جاری ہے…",
     "register.success_title": "رجسٹریشن کامیاب",
     "register.success_body": "آپ کی معلومات موصول ہو گئی ہیں۔ اسکول جلد آپ سے رابطہ کرے گا۔",
-
     "dashboard.title": "ہفتہ وار شیڈول",
     "dashboard.prev": "← پچھلا",
     "dashboard.next": "اگلا →",
     "dashboard.add_lesson": "+ سبق شامل کریں",
     "dashboard.no_lessons": "کوئی سبق نہیں",
-
     "lessons.title": "اسباق",
     "lessons.subtitle": ":count سبق",
     "lessons.confirm_delete": "یہ سبق حذف کریں؟ متعلقہ تفویضات اور حاضری کے ریکارڈ بھی حذف ہو جائیں گے۔",
@@ -82,7 +77,6 @@
     "lessons.days.5": "جمعہ",
     "lessons.days.6": "ہفتہ",
     "lessons.days.7": "اتوار",
-
     "groups.title": "گروپس",
     "groups.subtitle": ":count گروپ",
     "groups.add": "+ نیا گروپ",
@@ -104,7 +98,6 @@
     "groups.empty": "ابھی کوئی گروپ نہیں۔",
     "groups.empty_hint": "شروع کرنے کے لیے اپنا پہلا گروپ بنائیں۔",
     "groups.confirm_delete": "یہ گروپ حذف کریں؟ تمام متعلقہ اسباق بھی حذف ہو جائیں گے۔",
-
     "teachers.title": "اساتذہ",
     "teachers.subtitle": ":count استاد",
     "teachers.confirm_delete": ":name کو حذف کریں؟ یہ عمل واپس نہیں ہو سکتا۔",
@@ -131,7 +124,6 @@
     "teachers.groups_count": ":count گروپ",
     "teachers.empty": "ابھی کوئی استاد نہیں۔",
     "teachers.empty_hint": "ایڈمن اکاؤنٹ استاد شمار ہوتا ہے۔ اوپر والے بٹن سے مزید شامل کریں۔",
-
     "students.title": "طلباء",
     "students.subtitle": ":count طالب علم",
     "students.search": "طالب علم تلاش کریں…",
@@ -163,7 +155,6 @@
     "students.col.siblings": "بہن بھائی",
     "students.col.actions": "اقدامات",
     "students.empty": "ابھی کوئی طالب علم نہیں۔",
-
     "modal.tab.attendance": "حاضری",
     "modal.tab.assignments": "تفویضات",
     "modal.attendance.date": "تاریخ:",
@@ -201,5 +192,7 @@
     "modal.grading.needs_repeat": "دوبارہ ضروری ↺",
     "modal.grading.save": "گریڈز محفوظ کریں",
     "modal.grading.no_students": "اس تفویض سے کوئی طالب علم منسلک نہیں۔",
-    "modal.grading.grade_btn": "طلباء کو گریڈ کریں ←"
+    "modal.grading.grade_btn": "طلباء کو گریڈ کریں ←",
+    "lessons.conflict_group": "اس گروپ کے لیے اس وقت پہلے سے ایک کلاس مقرر ہے۔",
+    "lessons.conflict_teacher": "اس استاد کے لیے اس وقت پہلے سے ایک اور کلاس ہے۔"
 }
