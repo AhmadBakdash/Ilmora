@@ -10,6 +10,10 @@ class EnsureSchoolExists
 {
     public function handle(Request $request, Closure $next): mixed
     {
+        if ($request->is('livewire/*')) {
+            return $next($request);
+        }
+
         if (!School::exists() && !$request->is('setup*')) {
             return redirect()->route('setup');
         }
