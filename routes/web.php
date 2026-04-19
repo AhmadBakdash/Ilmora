@@ -8,6 +8,7 @@ use App\Livewire\Students;
 use App\Livewire\Schedule\LessonForm;
 use App\Livewire\Teachers;
 use App\Livewire\Auth\StudentRegister;
+use App\Services\AuthService;
 
 Route::middleware(\App\Http\Middleware\EnsureSchoolExists::class)->group(function () {
     Route::get('/setup', Setup::class)->name('setup');
@@ -46,8 +47,7 @@ Route::get('/locale/{locale}', function (string $locale) {
 
 Route::get('/login', \App\Livewire\Auth\Login::class)->name('login');
 Route::post('/logout', function () {
-    auth()->logout();
-    request()->session()->invalidate();
-    request()->session()->regenerateToken();
+    app(AuthService::class)->logout(request());
+
     return redirect('/');
 })->name('logout');

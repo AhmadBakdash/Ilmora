@@ -1,6 +1,4 @@
 <div class="w-full max-w-md animate-scale-in">
-
-    {{-- Logo --}}
     <div class="text-center mb-8">
         <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl
                     bg-gradient-to-br from-emerald-500 to-emerald-700

@@ -2,8 +2,8 @@
 
 namespace App\Livewire\Auth;
 
+use App\Services\AuthService;
 use Livewire\Component;
-use Illuminate\Support\Facades\Auth;
 
 class Login extends Component
 {
@@ -18,16 +18,15 @@ class Login extends Component
     public function login(): void
     {
         $this->validate();
-        if (Auth::attempt(['email' => $this->email, 'password' => $this->password])) {
-            session()->regenerate();
-            $this->redirect(route('dashboard'));
+        if (app(AuthService::class)->attemptLogin($this->email, $this->password)) {
+            $this->redirectRoute('dashboard');
         } else {
-            $this->addError('email', 'Invalid credentials.');
+            $this->addError('email', __('Invalid credentials.'));
         }
     }
 
     public function render()
     {
-        return view('livewire.auth.login')->layout('components.layouts.app');
+        return view('livewire.auth.login');
     }
 }
