@@ -35,6 +35,15 @@ Route::get('/', function () {
 });
 
 Route::get('/register/{school:slug}', StudentRegister::class)->name('student.register');
+Route::get('/locale/{locale}', function (string $locale) {
+    $supported = ['ar', 'en', 'de', 'fr', 'tr', 'ms', 'ur'];
+    if (!in_array($locale, $supported)) abort(404);
+    if (auth()->check()) {
+        auth()->user()->update(['locale' => $locale]);
+    }
+    return redirect()->back()->withCookie(cookie()->forever('locale', $locale));
+})->name('locale.switch');
+
 Route::get('/login', \App\Livewire\Auth\Login::class)->name('login');
 Route::post('/logout', function () {
     auth()->logout();

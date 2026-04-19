@@ -1,7 +1,7 @@
 # Ilmora — Product Requirements Document (PRD)
 
-**Version:** 4.2.0 — Spatie RBAC + Full 7-Day Calendar Sprint  
-**Date:** 2026-04-18  
+**Version:** 4.3.0 — Laravel Policies + Full Locale Sprint  
+**Date:** 2026-04-19  
 **Auditor:** Claude Code (Senior Technical PM)  
 **Classification:** Internal  
 **Branch audited:** `docs/add-project-documentation`
@@ -30,7 +30,7 @@
 | **@tailwindcss/typography** | Required | Present in `package.json` + `tailwind.config.js` | ✅ Configured |
 | **Vite** | ^6 | `"vite": "^6.0.11"` + `laravel-vite-plugin` in `package.json` | ✅ v6 |
 | **Chart.js** | ^4 | `"chart.js": "^4.4.6"` in `package.json` | 📦 Installed, unused |
-| **i18n — lang/ directory** | 7 locales | `lang/ar.json` and `lang/en.json` fully populated (~120 keys each). `de.json`, `tr.json`, `ur.json`, `ms.json`, `fr.json` still empty `{}` | 🔧 Partial (ar+en done, 5 locales empty) |
+| **i18n — lang/ directory** | 7 locales | All 7 locales fully populated (~204 keys each): ar, en, de, fr, tr, ms, ur. Language switcher dropdown in sidebar. | ✅ Done |
 | **SetLocale Middleware** | Registered | `SetLocale.php` exists and is **registered** in `bootstrap/app.php` via `->web(append:[SetLocale::class])` | ✅ Active |
 | **Queue Driver** | database | `QUEUE_CONNECTION=database` in `.env.example`; `jobs` table migration exists | ✅ Configured |
 | **Cache Driver** | file | `CACHE_STORE=file` in `.env.example` | ✅ Configured |
@@ -78,7 +78,7 @@
 | Email verification | ❌ Not Started | `email_verified_at` column exists in users migration but `MustVerifyEmail` interface not implemented. |
 | Role-based access control (Spatie) | ✅ Done | Migrations run; `HasRoles` on `User`; `RoleSeeder` creates `super_admin`, `school_admin`, `teacher`, `student` roles with 20 permissions; `assignRole()` called in `Setup`, `Students`, `Teachers`, `StudentRegister`; existing users backfilled; `$user->hasRole()`, `$user->can()`, `@role`/`@can` Blade directives all functional. |
 | Custom role system | ✅ Done | Spatie `RoleMiddleware` replaces `CheckRole` as `role` alias in `bootstrap/app.php`. Routes protected: `/lessons`, `/groups`, `/students` → `role:school_admin\|teacher`; `/teachers` → `role:school_admin`. Helper methods `isTeacher()` etc. retained for query scoping. |
-| Laravel Policies | ❌ Not Started | `app/Policies/` directory exists but contains only `.gitkeep`. No policy files. |
+| Laravel Policies | ✅ Done | `GroupPolicy`, `LessonPolicy`, `AssignmentPolicy`, `UserPolicy` in `app/Policies/`; registered via `Gate::policy()` in `AppServiceProvider::boot()`; all use `hasRole()` for consistency with route middleware; all 5 Livewire mutation components call `$this->authorize()` via `AuthorizesRequests` trait; `@can` guards added to student view buttons. |
 | Student invite system | 🔧 Partial | No `invites` table or invite codes. However a **shareable self-registration link** (`/register/{school:slug}`) is displayed and copyable in the admin students page, achieving similar onboarding flow without token-based invites. |
 | Teacher management (add/edit teachers) | ✅ Done | `app/Livewire/Teachers.php` + `resources/views/livewire/teachers.blade.php`; full CRUD (create, edit, delete); shows school_admin and teacher roles; prevents self-delete; route `GET /teachers` in `web.php`. Wired to `StoreTeacherRequest`. |
 
@@ -187,7 +187,7 @@
 
 | Feature | Status | Evidence |
 |---------|--------|----------|
-| Lang files created (7 locales) | 🔧 Partial | `lang/ar.json` and `lang/en.json` fully populated (~120 keys each covering nav.*, setup.*, auth.*, dashboard.*, lessons.*, groups.*, teachers.*, students.*, modal.*). `de.json`, `tr.json`, `ur.json`, `ms.json`, `fr.json` still contain empty `{}`. |
+| Lang files created (7 locales) | ✅ Done | All 7 locales fully populated (~204 keys each). Language-switcher Alpine.js dropdown added to sidebar. `locale` column added to `users` table; `SetLocale` middleware persists preference via cookie + DB. |
 | SetLocale middleware logic | ✅ Done | `app/Http/Middleware/SetLocale.php` registered in `bootstrap/app.php` via `->web(append:[\App\Http\Middleware\SetLocale::class])`; resolves locale from user pref → cookie → Accept-Language → fallback `'ar'`. |
 | Default locale set to Arabic | ✅ Done | `APP_LOCALE=ar` in `.env.example`; `'locale' => env('APP_LOCALE', 'ar')` in `config/app.php`. |
 | RTL layout (`dir="rtl"`) | ✅ Done | `resources/views/components/layouts/app.blade.php` — `<html dir="{{ in_array(app()->getLocale(), ['ar','ur']) ? 'rtl' : 'ltr' }}" lang="{{ app()->getLocale() }}">`. |
@@ -220,7 +220,7 @@ Cross-referencing the ERD entities against actual migration files:
 
 | ERD Entity | Migration File | Status | Notes |
 |------------|---------------|--------|-------|
-| `users` | `0001_01_01_000000_create_users_table.php` + `2024_01_01_000002_add_school_id_role_to_users_table.php` + `2026_04_18_000001_add_phone_to_users_table.php` + `2026_04_18_000003_add_guardian_name_to_users_table.php` + `2026_04_18_000004_add_age_to_users_table.php` | 🔧 Partial | Has `school_id`, `role`, `phone`, `guardian_name`, `age`. Missing: `locale`, `timezone`, `avatar_url`, `is_active`, `last_login_at`, `auth_provider`. |
+| `users` | `0001_01_01_000000_create_users_table.php` + `2024_01_01_000002_add_school_id_role_to_users_table.php` + `2026_04_18_000001–000004` + `2026_04_19_051826_add_locale_to_users_table.php` | 🔧 Partial | Has `school_id`, `role`, `phone`, `guardian_name`, `age`, `locale`. Missing: `timezone`, `avatar_url`, `is_active`, `last_login_at`, `auth_provider`. |
 | `schools` (tenants) | `2024_01_01_000001_create_schools_table.php` | 🔧 Partial | Has `name`, `slug`. Missing: `plan`, `settings`, `is_active`, `address`, `city`, `country`, `logo_url`, `deleted_at`. |
 | `groups` (halaqat) | `2024_01_01_000003_create_groups_table.php` | 🔧 Partial | Has core fields. Missing: `type`, `color_hex`, `max_students`, `recurring_schedule`, `is_active`, `is_archived`, `deleted_at`. |
 | `group_student` (halaqah_student) | `2024_01_01_000004_create_group_student_table.php` | 🔧 Partial | Has `group_id`, `user_id`. Missing: `status`, `sort_order`, `enrolled_at`, `withdrawn_at`. |
@@ -255,7 +255,7 @@ Cross-referencing the ERD entities against actual migration files:
 | Category | ✅ Done | 🔧 Partial | ❌ Not Started | 📦 Pkg Only |
 |----------|---------|-----------|--------------|------------|
 | 1. Multi-tenancy & Organization | 3 | 1 | 2 | 0 |
-| 2. Authentication & Authorization | 5 | 2 | 3 | 0 |
+| 2. Authentication & Authorization | 6 | 2 | 2 | 0 |
 | 3. Teacher Dashboard & Halaqah Mgmt | 6 | 0 | 5 | 0 |
 | 4. Student Management | 6 | 2 | 2 | 0 |
 | 5. Session / Class Scheduling | 5 | 0 | 3 | 0 |
@@ -264,19 +264,19 @@ Cross-referencing the ERD entities against actual migration files:
 | 8. Notifications & Alerts | 0 | 0 | 8 | 0 |
 | 9. Localization (Arabic/English) | 5 | 1 | 3 | 0 |
 | 10. Admin Panel | 2 | 0 | 6 | 0 |
-| **TOTAL** | **40** | **7** | **41** | **0** |
+| **TOTAL** | **41** | **7** | **40** | **0** |
 
 ### Overall Completion Estimate
 
 | Metric | Count | % |
 |--------|-------|---|
-| Fully Done (✅) | 40 | 45% |
+| Fully Done (✅) | 41 | 47% |
 | Partial (🔧) | 7 | 8% |
-| Not Started (❌) | 41 | 47% |
+| Not Started (❌) | 40 | 45% |
 | Pkg Only (📦) | 0 | 0% |
 | **Total features tracked** | **88** | — |
 
-> **Overall project completion: ~50%** (counting Partial as 50% credit: 40 + 3.5 = 43.5 / 88)
+> **Overall project completion: ~51%** (counting Partial as 50% credit: 41 + 3.5 = 44.5 / 88)
 
 ---
 
@@ -292,15 +292,16 @@ Currently no teacher can self-register. `laravel/breeze` is in `require-dev` but
 - Evidence of gap: No `GET /register` route, no register view, no password reset flow.
 - Acceptance: Teacher can register with name/email/password and log in.
 
-#### Priority 3 — Populate Remaining 5 Locale Files
-Arabic and English are fully translated. German, Turkish, Urdu, Malay, and French `lang/*.json` files still contain empty `{}`.
-- Files to update: `lang/de.json`, `lang/tr.json`, `lang/ur.json`, `lang/ms.json`, `lang/fr.json` — copy all ~120 keys from `en.json` and translate.
-- Acceptance: Switching locale to `de` renders German UI strings.
+#### ~~Priority 3 — Populate Remaining 5 Locale Files~~ ✅ Done
+All 7 locales fully translated (ar, en, de, fr, tr, ms, ur — ~204 keys each).
+Added `locale` column to `users` table, `locale.switch` route, and an Alpine.js language-switcher
+dropdown in the sidebar so admins can verify translations interactively.
 
-#### Priority 4 — Add Laravel Policies
-`app/Policies/` exists but is empty. Without policies, any authenticated user can edit any resource (no ownership checks).
-- Files to create: `HalaqahPolicy`, `LessonPolicy`, `AssignmentPolicy`; register in `AuthServiceProvider`.
-- Acceptance: A teacher cannot edit another teacher's group.
+#### ~~Priority 4 — Add Laravel Policies~~ ✅ Done
+`GroupPolicy`, `LessonPolicy`, `AssignmentPolicy`, `UserPolicy` created and registered in
+`AppServiceProvider`. All Livewire mutation methods (`save`, `edit`, `delete`, `saveAttendance`,
+`createAssignment`, `openGrading`, `saveGrades`) now call `$this->authorize()`.
+Ownership enforced: teachers can only modify lessons/groups assigned to them.
 
 #### Priority 5 — Progress & Reporting Foundation
 The platform collects attendance and assignment data but provides zero reporting. Add at minimum an attendance summary view and per-student memorization progress.
@@ -359,12 +360,12 @@ The platform collects attendance and assignment data but provides zero reporting
 - `app/Services/` — QuranService, ScheduleService, ProgressService (only `.gitkeep`)
 - `app/Notifications/` — SessionReminder, AssignmentDue (only `.gitkeep`)
 - `app/Console/Commands/` — ComputeSnapshots, SendReminders (only `.gitkeep`)
-- `app/Policies/` — HalaqahPolicy, AssignmentPolicy (only `.gitkeep`)
+- `app/Policies/` — HalaqahPolicy (GroupPolicy, LessonPolicy, AssignmentPolicy, UserPolicy now created ✅)
 - `resources/views/emails/` — mail templates (directory exists, empty)
 - `database/factories/` — model factories
 - ~~`database/seeders/RoleSeeder.php` — Spatie role seeder~~ ✅ Created
-- `lang/de.json`, `lang/tr.json`, `lang/ur.json`, `lang/ms.json`, `lang/fr.json` — still empty `{}`
+- ~~`lang/de.json`, `lang/tr.json`, `lang/ur.json`, `lang/ms.json`, `lang/fr.json`~~ ✅ All 7 locales fully translated
 
 ---
 
-*End of PRD — Updated 2026-04-18. Previous version: 4.1.0 (48% completion). Current version: 4.2.0 (50% completion). Sprint delivered: Spatie RBAC fully activated (migrations, HasRoles, RoleSeeder, route protection, user backfill); 7-day Sun–Sat calendar grid with Sunday-first ordering per Islamic/Arab convention.*
+*End of PRD — Updated 2026-04-19. Previous version: 4.2.0 (50% completion). Current version: 4.3.0 (51% completion). Sprint delivered: Laravel Policies (GroupPolicy, LessonPolicy, AssignmentPolicy, UserPolicy) with hasRole() checks and @can view guards; all 7 locales fully translated (tr, ms, ur added); language-switcher dropdown in sidebar; locale column on users table.*

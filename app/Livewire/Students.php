@@ -4,11 +4,15 @@ namespace App\Livewire;
 
 use App\Http\Requests\StoreStudentRequest;
 use App\Models\User;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Livewire\Component;
 
 class Students extends Component
 {
+    use AuthorizesRequests;
+
     public string $name = '';
     public string $age = '';
     public string $phone = '';
@@ -38,14 +42,16 @@ class Students extends Component
             'role'          => 'student',
         ];
 
-        if ($this->password) {
-            $data['password'] = Hash::make($this->password);
-        }
+        $data['password'] = $this->password
+            ? Hash::make($this->password)
+            : Hash::make(Str::random(32));
 
         if ($this->editingId) {
-            $student = User::find($this->editingId);
+            $student = User::findOrFail($this->editingId);
+            $this->authorize('updateStudent', $student);
             $student->update($data);
         } else {
+            $this->authorize('createStudent', User::class);
             $student = User::create($data);
             $student->assignRole('student');
         }
@@ -57,21 +63,22 @@ class Students extends Component
 
     public function edit(int $id): void
     {
-        $student = User::with('siblings')->find($id);
-        $this->editingId      = $id;
-        $this->name           = $student->name;
-        $this->age            = $student->age ? (string) $student->age : '';
-        $this->phone          = $student->phone ?? '';
-        $this->guardian_name  = $student->guardian_name ?? '';
-        $this->email          = $student->email ?? '';
-        $this->siblingIds  = $student->siblings->pluck('id')->toArray();
-        $this->showForm    = true;
+        $student = User::with('siblings')->findOrFail($id);
+        $this->authorize('updateStudent', $student);
+        $this->editingId     = $id;
+        $this->name          = $student->name;
+        $this->age           = $student->age ? (string) $student->age : '';
+        $this->phone         = $student->phone ?? '';
+        $this->guardian_name = $student->guardian_name ?? '';
+        $this->email         = $student->email ?? '';
+        $this->siblingIds    = $student->siblings->pluck('id')->toArray();
+        $this->showForm      = true;
     }
 
     public function delete(int $id): void
     {
-        $student = User::find($id);
-        // Remove symmetric sibling links before deleting
+        $student = User::findOrFail($id);
+        $this->authorize('deleteStudent', $student);
         foreach ($student->siblings as $sibling) {
             $sibling->siblings()->detach($id);
         }

@@ -4,11 +4,14 @@ namespace App\Livewire;
 
 use App\Http\Requests\StoreTeacherRequest;
 use App\Models\User;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
 
 class Teachers extends Component
 {
+    use AuthorizesRequests;
+
     public string $name     = '';
     public string $email    = '';
     public string $password = '';
@@ -23,13 +26,15 @@ class Teachers extends Component
 
     public function create(): void
     {
+        $this->authorize('createTeacher', User::class);
         $this->reset(['name', 'email', 'password', 'editingId']);
         $this->showForm = true;
     }
 
     public function edit(int $id): void
     {
-        $teacher        = User::findOrFail($id);
+        $teacher = User::findOrFail($id);
+        $this->authorize('updateTeacher', $teacher);
         $this->editingId = $id;
         $this->name     = $teacher->name;
         $this->email    = $teacher->email;
@@ -53,8 +58,11 @@ class Teachers extends Component
         }
 
         if ($this->editingId) {
-            User::findOrFail($this->editingId)->update($data);
+            $teacher = User::findOrFail($this->editingId);
+            $this->authorize('updateTeacher', $teacher);
+            $teacher->update($data);
         } else {
+            $this->authorize('createTeacher', User::class);
             $teacher = User::create($data);
             $teacher->assignRole('teacher');
         }
@@ -66,14 +74,10 @@ class Teachers extends Component
     public function delete(int $id): void
     {
         $teacher = User::where('school_id', auth()->user()->school_id)
-            ->where('role', 'teacher')
+            ->whereIn('role', ['teacher', 'school_admin'])
             ->findOrFail($id);
 
-        // Prevent deleting self
-        if ($teacher->id === auth()->id()) {
-            session()->flash('error', 'You cannot delete your own account.');
-            return;
-        }
+        $this->authorize('deleteTeacher', $teacher);
 
         $teacher->delete();
         session()->flash('success', 'Teacher deleted.');

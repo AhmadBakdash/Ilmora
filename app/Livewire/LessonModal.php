@@ -8,10 +8,13 @@ use App\Models\Attendance;
 use App\Models\Lesson;
 use App\Models\Surah;
 use Carbon\Carbon;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 
 class LessonModal extends Component
 {
+    use AuthorizesRequests;
+
     public ?int $lessonId = null;
 
     // Attendance
@@ -66,6 +69,9 @@ class LessonModal extends Component
 
     public function saveAttendance(): void
     {
+        $lesson = Lesson::findOrFail($this->lessonId);
+        $this->authorize('markAttendance', $lesson);
+
         foreach ($this->attendanceStatuses as $studentId => $status) {
             Attendance::updateOrCreate(
                 ['lesson_id' => $this->lessonId, 'student_id' => $studentId, 'date' => $this->attendanceDate],
@@ -98,6 +104,9 @@ class LessonModal extends Component
 
     public function createAssignment(): void
     {
+        $lesson = Lesson::findOrFail($this->lessonId);
+        $this->authorize('manageAssignments', $lesson);
+
         $this->validate((new StoreAssignmentRequest())->rules());
 
         $assignment = Assignment::create([
@@ -112,7 +121,7 @@ class LessonModal extends Component
             'status'       => 'assigned',
         ]);
 
-        $lesson = Lesson::with('group.students')->find($this->lessonId);
+        $lesson->load('group.students');
         foreach ($lesson->group->students as $student) {
             $assignment->students()->attach($student->id, ['status' => 'pending']);
         }
@@ -131,8 +140,9 @@ class LessonModal extends Component
 
     public function openGrading(int $assignmentId): void
     {
+        $assignment = Assignment::with(['students', 'lesson'])->findOrFail($assignmentId);
+        $this->authorize('grade', $assignment);
         $this->gradingAssignmentId = $assignmentId;
-        $assignment = Assignment::with('students')->find($assignmentId);
         $this->gradeStatuses = [];
         $this->gradeNotes    = [];
         foreach ($assignment->students as $student) {
@@ -150,7 +160,8 @@ class LessonModal extends Component
 
     public function saveGrades(): void
     {
-        $assignment = Assignment::with('students')->find($this->gradingAssignmentId);
+        $assignment = Assignment::with(['students', 'lesson'])->findOrFail($this->gradingAssignmentId);
+        $this->authorize('grade', $assignment);
 
         foreach ($this->gradeStatuses as $studentId => $status) {
             $assignment->students()->updateExistingPivot($studentId, [
@@ -159,7 +170,6 @@ class LessonModal extends Component
             ]);
         }
 
-        // Auto-mark assignment completed when all students are done
         $assignment->refresh()->load('students');
         $allDone = $assignment->students->isNotEmpty()
             && $assignment->students->every(fn ($s) => $s->pivot->status === 'done');

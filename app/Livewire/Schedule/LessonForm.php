@@ -6,10 +6,13 @@ use App\Http\Requests\StoreLessonRequest;
 use App\Models\Group;
 use App\Models\Lesson;
 use App\Models\User;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 
 class LessonForm extends Component
 {
+    use AuthorizesRequests;
+
     public string $title = '';
     public int|string $group_id = '';
     public int|string $teacher_id = '';
@@ -44,6 +47,7 @@ class LessonForm extends Component
     public function edit(int $id): void
     {
         $lesson = Lesson::findOrFail($id);
+        $this->authorize('update', $lesson);
         $this->editingId    = $id;
         $this->title        = $lesson->title;
         $this->group_id     = $lesson->group_id;
@@ -61,8 +65,11 @@ class LessonForm extends Component
         $data = $this->validate();
 
         if ($this->editingId) {
-            Lesson::findOrFail($this->editingId)->update($data);
+            $lesson = Lesson::findOrFail($this->editingId);
+            $this->authorize('update', $lesson);
+            $lesson->update($data);
         } else {
+            $this->authorize('create', Lesson::class);
             Lesson::create($data);
         }
 
@@ -73,7 +80,9 @@ class LessonForm extends Component
 
     public function delete(int $id): void
     {
-        Lesson::findOrFail($id)->delete();
+        $lesson = Lesson::findOrFail($id);
+        $this->authorize('delete', $lesson);
+        $lesson->delete();
         session()->flash('success', 'Lesson deleted.');
     }
 

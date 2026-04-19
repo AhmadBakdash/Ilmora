@@ -89,6 +89,61 @@ $nav = [
                 <p class="text-xs text-slate-400 dark:text-slate-500 truncate">{{ auth()->user()->email }}</p>
             </div>
         </div>
+        {{-- Language switcher --}}
+        @php
+            $languages = [
+                'ar' => 'العربية',
+                'en' => 'English',
+                'de' => 'Deutsch',
+                'fr' => 'Français',
+                'tr' => 'Türkçe',
+                'ms' => 'Melayu',
+                'ur' => 'اردو',
+            ];
+            $currentLocale = app()->getLocale();
+        @endphp
+        <div x-data="{ open: false }" class="mb-2">
+            <button @click="open = !open"
+                    class="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm
+                           text-slate-500 dark:text-slate-400
+                           hover:bg-slate-100 dark:hover:bg-navy-700
+                           hover:text-slate-700 dark:hover:text-slate-200
+                           transition-colors duration-150">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253M3 12a8.96 8.96 0 0 1 .284-2.253"/>
+                </svg>
+                <span class="flex-1 text-start">{{ $languages[$currentLocale] ?? $currentLocale }}</span>
+                <svg class="w-3 h-3 transition-transform duration-150" :class="open ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m19 9-7 7-7-7"/>
+                </svg>
+            </button>
+            <div x-show="open"
+                 x-transition:enter="transition ease-out duration-100"
+                 x-transition:enter-start="opacity-0 -translate-y-1"
+                 x-transition:enter-end="opacity-100 translate-y-0"
+                 x-transition:leave="transition ease-in duration-75"
+                 x-transition:leave-start="opacity-100 translate-y-0"
+                 x-transition:leave-end="opacity-0 -translate-y-1"
+                 class="mt-1 rounded-xl border border-slate-100 dark:border-navy-700
+                        bg-slate-50 dark:bg-navy-800 py-1"
+                 style="display:none">
+                @foreach($languages as $code => $label)
+                    <a href="{{ route('locale.switch', $code) }}"
+                       class="flex items-center gap-2 px-3 py-1.5 text-sm transition-colors duration-100
+                              {{ $code === $currentLocale
+                                  ? 'text-emerald-600 dark:text-emerald-400 font-medium'
+                                  : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-navy-700' }}">
+                        <span class="flex-1">{{ $label }}</span>
+                        @if($code === $currentLocale)
+                            <svg class="w-3.5 h-3.5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/>
+                            </svg>
+                        @endif
+                    </a>
+                @endforeach
+            </div>
+        </div>
+
         <form method="POST" action="{{ route('logout') }}">
             @csrf
             <button type="submit"
